@@ -74,10 +74,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: c224ac897bed083dabf11f238dd11a239809b446740be0c2044608c50029ffdf
+      sha256: "8ffe990dac54a4a5492747added38571a5ab474c8e5d196809ea08849c69b1bb"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.9"
+    version: "2.0.13"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -95,10 +95,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_android
-      sha256: a8ee18649a67750cbd477a6867a1bf9c4154c5e9f69d722c8b53a627a6d58303
+      sha256: b1aeab571b33e983ced9977f2f0eca2b25925f6319e99e3901cfc1675e1b5ada
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.9"
+    version: "2.4.13"
   google_maps_flutter_ios:
     dependency: transitive
     description:

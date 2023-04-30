@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:i2_i3_g9/app/widgets/list_rides.dart';
 import 'package:i2_i3_g9/app/widgets/map_overview.dart';
 import 'package:i2_i3_g9/app/models/ride.dart';
+import 'package:i2_i3_g9/app/widgets/nav-bar.dart';
 
 class DogsRide extends StatefulWidget {
   const DogsRide({Key? key}) : super(key: key);
@@ -12,6 +13,7 @@ class DogsRide extends StatefulWidget {
 
 class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
   final List<Ride> _rides = <Ride>[];
+  int _selectedIndex = 0;
   late AnimationController
       _increaseController; // Controlleur pour la liste des balades
   late AnimationController _mapController; // Controlleur pour la Map
@@ -22,6 +24,11 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
   double sizeContainer = 0.50; // Taille de l'écran au démarrage
   bool isMap = false; // Vérifie si la Map est agrandi
   bool isJourneys = false; // Vérifie si la liste des balades est agrandi
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   void initState() {
@@ -93,46 +100,45 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
     _rides.add(ride2);
 
     return Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Expanded(child: MapOverview()),
-            Expanded(
-                child: GestureDetector(
-              onVerticalDragUpdate: isMap
-                  ? null
-                  : (DragUpdateDetails details) {
-                      _startAnimationMap(); // Lancer l'animation d'agrandissement
-                    },
-              child: Container(
-                height: screenHeight * sizeContainer,
-                child: MapOverview(), // Affichage de la Google Map
-              ),
-            )),
-            NotificationListener<ScrollNotification>(
-              onNotification: (scrollNotification){
-                if(isJourneys == false){
-                  _startAnimationIncrease();
-                }
-                return true;
-              },
-              child:  Container(
-                  height: screenHeight * sizeContainer,
-                  margin: const EdgeInsets.all(1.0),
-                  child: SizedBox(
-                    height: 25,
-                    child: ListRide(),
-                    // child: ListRide(
-                    //     image: "I",
-                    //     depart: "Limoges",
-                    //     destination: "Brive",
-                    //     onPressedMessage: () {},
-                    //     onPressedDone: () {}),
-                  )
-              ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Expanded(child: MapOverview()),
+          Expanded(
+              child: GestureDetector(
+            onVerticalDragUpdate: isMap
+                ? null
+                : (DragUpdateDetails details) {
+                    _startAnimationMap(); // Lancer l'animation d'agrandissement
+                  },
+            child: SizedBox(
+              height: screenHeight * sizeContainer,
+              child: MapOverview(), // Affichage de la Google Map
             ),
-          ],
-    ));
+          )),
+          NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (isJourneys == false) {
+                _startAnimationIncrease();
+              }
+              return true;
+            },
+            child: Container(
+                height: screenHeight * sizeContainer,
+                margin: const EdgeInsets.all(1.0),
+                child: SizedBox(
+                  height: 25,
+                  child: ListRide(),
+                )),
+          ),
+        ],
+      ),
+      bottomNavigationBar: NavBar(
+        // Bottom sheet navigation
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+      ),
+    );
   }
 }
 

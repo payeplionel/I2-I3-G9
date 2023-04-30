@@ -50,6 +50,7 @@ class ViewMore extends StatelessWidget {
                         avatar: Icon(
                           Icons.calendar_month_sharp,
                           color: Color.fromRGBO(87, 75, 144, 1),
+                          size: 20,
                         ),
                         label: Text(
                           '12 feb · 16h00',
