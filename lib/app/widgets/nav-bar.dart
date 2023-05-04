@@ -9,6 +9,7 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: ImageIcon(AssetImage('assets/images/bone.png')),
@@ -32,13 +33,12 @@ class NavBar extends StatelessWidget {
       ],
       currentIndex: selectedIndex,
       selectedItemColor: Theme.of(context).primaryColor,
-      unselectedItemColor: Theme.of(context).primaryColor,
+      unselectedItemColor: Colors.grey,
       onTap: (index){
         onItemTapped(index);
     },
       iconSize: 18,
       selectedFontSize: 12,
-      unselectedFontSize: 12,
     );
   }
 }

@@ -69,6 +69,7 @@ flutter:
     - assets/images/qr.png
     - assets/images/settings.png
     - assets/images/settings-selected.png
+    - assets/images/filter.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
