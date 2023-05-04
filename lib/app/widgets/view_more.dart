@@ -46,16 +46,16 @@ class ViewMore extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Chip(
-                        backgroundColor: Color.fromRGBO(87, 75, 144, 0.1),
+                        backgroundColor: Color.fromRGBO(48, 51, 107, 0.1),
                         avatar: Icon(
                           Icons.calendar_month_sharp,
-                          color: Color.fromRGBO(87, 75, 144, 1),
+                          color: Color.fromRGBO(48, 51, 107, 1),
                           size: 20,
                         ),
                         label: Text(
                           '12 feb · 16h00',
                           style:
-                              TextStyle(color: Color.fromRGBO(87, 75, 144, 1)),
+                              TextStyle(color: Color.fromRGBO(48, 51, 107, 1)),
                         ),
                       ),
                     ),
@@ -84,19 +84,19 @@ class ViewMore extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.start,
                   children: const [
                     Chip(
-                      backgroundColor: Color.fromRGBO(87, 75, 144, 0.1),
+                      backgroundColor: Color.fromRGBO(48, 51, 107, 0.1),
                       avatar: Text("🐶"),
                       label: Text(
                         'Max',
-                        style: TextStyle(color: Color.fromRGBO(87, 75, 144, 1)),
+                        style: TextStyle(color: Color.fromRGBO(48, 51, 107, 1)),
                       ),
                     ),
                     Chip(
-                      backgroundColor: Color.fromRGBO(87, 75, 144, 0.1),
+                      backgroundColor: Color.fromRGBO(48, 51, 107, 0.1),
                       avatar: Text("😸"),
                       label: Text(
                         'Lucie',
-                        style: TextStyle(color: Color.fromRGBO(87, 75, 144, 1)),
+                        style: TextStyle(color: Color.fromRGBO(48, 51, 107, 1)),
                       ),
                     ),
                   ],
@@ -142,28 +142,27 @@ class ViewMore extends StatelessWidget {
           ),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
                 child: Container(
-              margin:
+                  margin:
                   const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-              child: OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                  child: OutlinedButton(
+                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: const Text(
+                      'Accepter',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
                   ),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Text(
-                    'Accepter',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                ),
-              ),
-            )),
+                )),
           ],
         )
       ],

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:i2_i3_g9/app/widgets/filter_trips.dart';
 import 'package:i2_i3_g9/app/widgets/list_rides.dart';
 import 'package:i2_i3_g9/app/widgets/map_overview.dart';
 import 'package:i2_i3_g9/app/models/ride.dart';
 import 'package:i2_i3_g9/app/widgets/nav-bar.dart';
+import 'package:i2_i3_g9/app/widgets/view_more.dart';
 
 class DogsRide extends StatefulWidget {
   const DogsRide({Key? key}) : super(key: key);
@@ -100,6 +102,7 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
     _rides.add(ride2);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -126,12 +129,33 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
             child: Container(
                 height: screenHeight * sizeContainer,
                 margin: const EdgeInsets.all(1.0),
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.75,
+                  minHeight: MediaQuery.of(context).size.height * 0.25,
+                ),
                 child: SizedBox(
                   height: 25,
                   child: ListRide(),
                 )),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet<void>(
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.vertical(top: Radius.circular(20.0)),
+            ),
+            builder: (BuildContext context) {
+              return const FilterTrips();
+            },
+          );
+        },
+        backgroundColor: const Color.fromRGBO(48, 51, 107, 0.8),
+        mini: true,
+        child: const ImageIcon(AssetImage('assets/images/filter.png'),size: 18,),
       ),
       bottomNavigationBar: NavBar(
         // Bottom sheet navigation
@@ -141,6 +165,16 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
     );
   }
 }
+
+// TextFormField(
+// decoration: InputDecoration(
+// labelText: 'Nom',
+// hintText: 'Entrez votre nom',
+// ),
+// onChanged: (value) {
+// // gérer le changement de texte
+// },
+// ),
 
 // Container(
 //   height: screenHeight * sizeContainer,
