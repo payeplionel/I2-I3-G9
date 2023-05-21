@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "517056704409",
+    "project_id": "dogsrides-e2f95",
+    "storage_bucket": "dogsrides-e2f95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517056704409:android:071404a7f7755509aa2d08",
+        "android_client_info": {
+          "package_name": "com.example.i2_i3_g9"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "517056704409-ibmdd5movsmbnmaq81faqtcllcp2k01j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6AF5oREXxSLJRCMsmkPxYOrwr0lkUK2I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "517056704409-ibmdd5movsmbnmaq81faqtcllcp2k01j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "517056704409-i6eos0gss86q3k2at8cpjmq7g71r5ojd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.i2I3G9"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
