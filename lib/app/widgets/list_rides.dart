@@ -18,6 +18,8 @@ class ListRide extends StatelessWidget {
   final List<String> entries = <String>['A', 'B', 'C', 'E', 'F', 'G', 'I'];
   final List<int> colorCodes = <int>[600, 500, 100, 200, 300, 200, 50];
 
+  ListRide({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ListView.separated(

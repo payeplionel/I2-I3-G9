@@ -4,7 +4,6 @@ import 'package:i2_i3_g9/app/widgets/list_rides.dart';
 import 'package:i2_i3_g9/app/widgets/map_overview.dart';
 import 'package:i2_i3_g9/app/models/ride.dart';
 import 'package:i2_i3_g9/app/widgets/nav-bar.dart';
-import 'package:i2_i3_g9/app/widgets/view_more.dart';
 
 class DogsRide extends StatefulWidget {
   const DogsRide({Key? key}) : super(key: key);

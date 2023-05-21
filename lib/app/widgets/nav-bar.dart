@@ -14,12 +14,12 @@ class NavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: ImageIcon(AssetImage('assets/images/bone.png')),
           activeIcon: ImageIcon(AssetImage('assets/images/bone-selected.png')),
-          label: 'Home',
+          label: 'Accueil',
         ),
         BottomNavigationBarItem(
           icon: ImageIcon(AssetImage('assets/images/add.png')),
           activeIcon: ImageIcon(AssetImage('assets/images/add-selected.png')),
-          label: 'Add',
+          label: 'Ajouter',
         ),
         BottomNavigationBarItem(
           icon: ImageIcon(AssetImage('assets/images/qr.png')),
@@ -28,7 +28,7 @@ class NavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: ImageIcon(AssetImage('assets/images/settings.png')),
           activeIcon: ImageIcon(AssetImage('assets/images/settings-selected.png')),
-          label: 'Settings',
+          label: 'Paramètres',
         ),
       ],
       currentIndex: selectedIndex,
@@ -36,7 +36,17 @@ class NavBar extends StatelessWidget {
       unselectedItemColor: Colors.grey,
       onTap: (index){
         onItemTapped(index);
-    },
+        switch(index){
+          case 0 :
+            Navigator.pushNamed(context, '/');
+            break;
+          case 1:
+            Navigator.pushNamed(context, '/create');
+            break;
+          default:
+            Navigator.pushNamed(context, '/');
+        }
+      },
       iconSize: 18,
       selectedFontSize: 12,
     );
