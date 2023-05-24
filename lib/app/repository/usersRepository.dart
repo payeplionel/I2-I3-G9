@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:i2_i3_g9/app/models/address.dart';
 import 'package:i2_i3_g9/app/models/users.dart';
-
 import '../models/pets.dart';
 import '../models/rides.dart';
 
@@ -55,7 +53,7 @@ class UsersRepository {
     await petRef.set(petData);
   }
 
-  Future<Address?> getUserById(String userId) async {
+  Future<Address?> getAddressById(String userId) async {
     DocumentSnapshot documentSnapshot = await collection.doc(userId)
         .get();
 
@@ -63,6 +61,18 @@ class UsersRepository {
       final Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
       final Address address = Address.fromJson(data['address']);
       return address;
+    }
+    return null;
+  }
+
+  Future<Users?> getUserById(String userId) async {
+    DocumentSnapshot documentSnapshot = await collection.doc(userId)
+        .get();
+
+    if (documentSnapshot.exists) {
+      final Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+      final Users user = Users.fromJson(data);
+      return user;
     }
     return null;
   }

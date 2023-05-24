@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:i2_i3_g9/app/models/address.dart';
 import 'package:i2_i3_g9/app/models/pets.dart';
 import 'package:i2_i3_g9/app/models/rides.dart';
@@ -11,8 +10,8 @@ class Users {
   String password;
   bool verification = false;
   Address address;
-  Map<String,Pets> pets;
-  List<Rides> rides;
+  // Map<String,Pets> pets;
+  // List<Rides> rides;
 
   Users({
     required this.email,
@@ -21,8 +20,8 @@ class Users {
     required this.gender,
     required this.password,
     required this.address,
-    required this.pets,
-    required this.rides,
+    // required this.pets,
+    // required this.rides,
   });
 
   Map<String, dynamic> toJson() => {
@@ -33,8 +32,8 @@ class Users {
     'password': password,
     'verification': verification,
     'address': address.toJson(),
-    'pets': _petsList(pets),
-    'rides': _ridesList(rides),
+    // 'pets': _petsList(pets),
+    // 'rides': _ridesList(rides),
   };
 
   factory Users.fromJson(Map<String, dynamic> json) {
@@ -45,8 +44,8 @@ class Users {
       gender: json['gender'] as String,
       password: json['password'] as String,
       address: Address.fromJson(json['address'] as Map<String, dynamic>),
-      pets: _convertPets(json['pets'] as Map<String, dynamic>),
-      rides: _convertRides(json['rides'] as Map<String, dynamic>),
+      // pets: _convertPets(json['pets'] as Map<String, dynamic>),
+      // rides: _convertRides(json['rides'] as Map<String, dynamic>),
     );
   }
 

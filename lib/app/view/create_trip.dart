@@ -82,7 +82,7 @@ class _CreateTripState extends State<CreateTrip> {
 
   void createRide() async {
     Address? address = await UsersRepository()
-        .getUserById(Globals().idUser); // Récupération de l'utilisateur
+        .getAddressById(Globals().idUser); // Récupération de l'utilisateur
     if (address != null && petsSelected.isNotEmpty) { // Vérifier que l'adresse et qu'un animal a été choisi
       String isNotAvailable = await RidesRepository()
           .isAvailableOrNot(
@@ -105,8 +105,8 @@ class _CreateTripState extends State<CreateTrip> {
             partner: '',
             pets: petsSelected,
             creator: Globals().idUser,
-            date: date,
-            time: time,
+            date: Timestamp.fromDate(date),
+            time: Timestamp.fromDate(time),
             status: 'available');
         RidesRepository().addRide(ride);
       }

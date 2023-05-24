@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:i2_i3_g9/app/models/users.dart';
-
-import '../repository/usersRepository.dart';
 
 class ListPets extends StatelessWidget {
   ListPets(
