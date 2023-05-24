@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       // home: const DogsRide(),
       initialRoute: '/',
       routes: {
-        '/': (context) => const DogsRide(),
+        '/': (context) => DogsRide(),
         '/create': (context) =>  CreateTrip(),
 
       },

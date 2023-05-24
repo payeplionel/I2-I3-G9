@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Rides {
   Rides({
     required this.address,
@@ -16,14 +18,14 @@ class Rides {
      */
   });
 
-  final String address;
-  final String code;
-  final String partner;
-  final List<String> pets;
-  final String status;
-  final String creator;
-  final DateTime date;
-  final DateTime time;
+  String address;
+  String code;
+  String partner;
+  List<String> pets;
+  String status;
+  String creator;
+  Timestamp date;
+  Timestamp time;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'address': address,
@@ -41,22 +43,12 @@ class Rides {
       address: json['address'] as String,
       code: json['code'] as String,
       partner: json['partner'] as String,
-      pets: _convertPets(json['pets'] as Map<String, dynamic>),
+      pets: List<String>.from(json['pets']),
       status: json['status'] as String,
       creator: json['creator'] as String,
-      time: json['time'] as DateTime,
-      date: json['date'] as DateTime,
+      time: json['time'] as Timestamp,
+      date: json['date'] as Timestamp,
     );
-  }
-
-  static List<String> _convertPets(Map<String, dynamic> petsMap) {
-    final pets = <String>[];
-
-    petsMap.forEach((key, value) {
-      pets.add(value as String);
-    });
-
-    return pets;
   }
 
   List<String> _petsList(List<String> pets) {
