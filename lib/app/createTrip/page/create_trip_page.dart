@@ -2,27 +2,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:i2_i3_g9/app/models/address.dart';
-import 'package:i2_i3_g9/app/models/rides.dart';
+import 'package:i2_i3_g9/app/models/ride.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/repository/usersRepository.dart';
 import 'package:i2_i3_g9/app/utils/globals.dart';
-import 'package:i2_i3_g9/app/widgets/date_starting.dart';
-import 'package:i2_i3_g9/app/widgets/list_pets.dart';
-import 'package:i2_i3_g9/app/widgets/select_starting.dart';
-import '../widgets/nav-bar.dart';
+import '../widgets/date_starting.dart';
+import '../widgets/list_pets.dart';
+import '../../navbar/widgets/nav-bar.dart';
+import '../widgets/select_starting.dart';
+import 'package:geocoding/geocoding.dart';
 
-class CreateTrip extends StatefulWidget {
-  CreateTrip({Key? key}) : super(key: key);
+class CreateTripPage extends StatefulWidget {
+  CreateTripPage({Key? key}) : super(key: key);
 
   // Récupération de la liste des animaux domestiques d'un utilisateur
   final Stream<QuerySnapshot> petsCollection =
       UsersRepository().getPetsOfUserStream(Globals().idUser);
 
   @override
-  State<CreateTrip> createState() => _CreateTripState();
+  State<CreateTripPage> createState() => _CreateTripStatePage();
 }
 
-class _CreateTripState extends State<CreateTrip> {
+class _CreateTripStatePage extends State<CreateTripPage> {
   final ScrollController scrollController = ScrollController();
   int _selectedIndex = 1;
   List<String> petsSelected = []; // Liste des animaux qui vont faire la balade
@@ -62,11 +63,27 @@ class _CreateTripState extends State<CreateTrip> {
 
   Future<void> updateDeparturePoint(String departure) async {
     // Choix du point de départ
-    if(departure == 'Ma position actuelle'){
+    if (departure == 'Ma position actuelle') {
       await _getCurrentPosition();
+      _getAddressFromLatLng(_currentPosition!);
     }
     setState(() {
       dropdownValue = departure;
+    });
+  }
+
+  // Récupérer l'adresse sous le format humain
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            '${place.street}, ${place.postalCode},${place.locality}, ${place.country}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
     });
   }
 
@@ -83,12 +100,14 @@ class _CreateTripState extends State<CreateTrip> {
   void createRide() async {
     Address? address = await UsersRepository()
         .getAddressById(Globals().idUser); // Récupération de l'utilisateur
-    if (address != null && petsSelected.isNotEmpty) { // Vérifier que l'adresse et qu'un animal a été choisi
+    if (address != null && petsSelected.isNotEmpty) {
+      // Vérifier que l'adresse et qu'un animal a été choisi
       String isNotAvailable = await RidesRepository()
-          .isAvailableOrNot(
-          time, Globals().idUser, petsSelected);
-      if(isNotAvailable.isNotEmpty){ // Vérifier que les animaux sont disponibles, ne sont pas déjà dans une balade dans un intervalle de 6 heures
-        warningText = '$isNotAvailable déjà présent dans une autre balade, veuillez séparer les balades d\'au moins 3 heures avec cette nouvelle balade 😿';
+          .isAvailableOrNot(time, Globals().idUser, petsSelected);
+      if (isNotAvailable.isNotEmpty) {
+        // Vérifier que les animaux sont disponibles, ne sont pas déjà dans une balade dans un intervalle de 6 heures
+        warningText =
+            '$isNotAvailable déjà présent dans une autre balade, veuillez séparer les balades d\'au moins 3 heures avec cette nouvelle balade 😿';
         final snackBar = SnackBar(
           content: Text(warningText),
           backgroundColor: Theme.of(context).primaryColor,
@@ -98,22 +117,36 @@ class _CreateTripState extends State<CreateTrip> {
           ),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }else{
-        Rides ride = Rides( // Ajout d'un nouveau trajet
-            address: address.toString(),
-            code: '',
-            partner: '',
-            pets: petsSelected,
-            creator: Globals().idUser,
-            date: Timestamp.fromDate(date),
-            time: Timestamp.fromDate(time),
-            status: 'available');
-        RidesRepository().addRide(ride);
+      } else {
+        if(dropdownValue == 'Ma position actuelle'){
+          Rides ride = Rides(
+            // Ajout d'un nouveau trajet
+              address: _currentAddress.toString(),
+              code: '',
+              partner: '',
+              pets: petsSelected,
+              creator: Globals().idUser,
+              date: Timestamp.fromDate(date),
+              time: Timestamp.fromDate(time),
+              status: 'available');
+          RidesRepository().addRide(ride);
+        }else {
+          Rides ride = Rides(
+            // Ajout d'un nouveau trajet
+              address: address.toString(),
+              code: '',
+              partner: '',
+              pets: petsSelected,
+              creator: Globals().idUser,
+              date: Timestamp.fromDate(date),
+              time: Timestamp.fromDate(time),
+              status: 'available');
+          RidesRepository().addRide(ride);
+        }
       }
     } else {
       if (petsSelected.isEmpty) {
-        warningText =
-        'Sélectionner au moins un animal de compagnie';
+        warningText = 'Sélectionner au moins un animal de compagnie';
       }
       final snackBar = SnackBar(
         content: Text(warningText),
@@ -134,7 +167,8 @@ class _CreateTripState extends State<CreateTrip> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Location services are disabled. Please enable the services')));
+          content: Text(
+              'Location services are disabled. Please enable the services')));
       return false;
     }
     permission = await Geolocator.checkPermission();
@@ -148,7 +182,8 @@ class _CreateTripState extends State<CreateTrip> {
     }
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Location permissions are permanently denied, we cannot request permissions.')));
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
       return false;
     }
     return true;
@@ -157,8 +192,7 @@ class _CreateTripState extends State<CreateTrip> {
   Future<void> _getCurrentPosition() async {
     final hasPermission = await _handleLocationPermission();
     if (!hasPermission) return;
-    await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high)
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       setState(() => _currentPosition = position);
     }).catchError((e) {
@@ -193,16 +227,19 @@ class _CreateTripState extends State<CreateTrip> {
                     SelectStarting(
                       dropdownValue: dropdownValue,
                       updateDeparturePoint: updateDeparturePoint,
+                      currentAddress: _currentAddress,
                       manualAddress: manualAddress,
                     ),
-                    DateStarting( // Widget pour le choix du point de départ
+                    DateStarting(
+                      // Widget pour le choix du point de départ
                       date: date,
                       time: time,
                       updateDate: updateDate,
                       updateTime: updateTime,
                       context: this.context,
                     ),
-                    ListPets( // Widget pour l'affichage des animaux de compagnies
+                    ListPets(
+                      // Widget pour l'affichage des animaux de compagnies
                       updatePetsSelected: updatePetsSelected,
                       searchInPetsSelected: searchInPetsSelected,
                       petsCollection: widget.petsCollection,

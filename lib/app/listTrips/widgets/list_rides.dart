@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:i2_i3_g9/app/models/rides.dart';
-import 'package:i2_i3_g9/app/models/users.dart';
+import 'package:i2_i3_g9/app/models/ride.dart';
+import 'package:i2_i3_g9/app/models/user.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/repository/usersRepository.dart';
-import 'package:i2_i3_g9/app/widgets/view_more.dart';
-import '../utils/globals.dart';
+import '../widgets/view_more.dart';
+import '../../utils/globals.dart';
 
 class ListRide extends StatelessWidget {
   final Stream<QuerySnapshot> ridesCollection;

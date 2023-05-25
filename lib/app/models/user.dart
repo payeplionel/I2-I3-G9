@@ -1,6 +1,6 @@
 import 'package:i2_i3_g9/app/models/address.dart';
-import 'package:i2_i3_g9/app/models/pets.dart';
-import 'package:i2_i3_g9/app/models/rides.dart';
+import 'package:i2_i3_g9/app/models/pet.dart';
+import 'package:i2_i3_g9/app/models/ride.dart';
 
 class Users {
   String email;

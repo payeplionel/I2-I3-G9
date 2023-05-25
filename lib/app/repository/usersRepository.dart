@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:i2_i3_g9/app/models/address.dart';
-import 'package:i2_i3_g9/app/models/users.dart';
-import '../models/pets.dart';
-import '../models/rides.dart';
+import 'package:i2_i3_g9/app/models/user.dart';
+import '../models/pet.dart';
+import '../models/ride.dart';
 
 class UsersRepository {
   final CollectionReference collection =

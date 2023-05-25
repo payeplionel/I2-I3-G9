@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:i2_i3_g9/app/models/pets.dart';
-import 'package:i2_i3_g9/app/models/rides.dart';
+import 'package:i2_i3_g9/app/models/pet.dart';
+import 'package:i2_i3_g9/app/models/ride.dart';
 
 class RidesRepository {
   final CollectionReference collection =
