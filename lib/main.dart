@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:i2_i3_g9/app/view/create_trip.dart';
-import 'package:i2_i3_g9/app/view/dogs_ride.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'app/createTrip/page/create_trip_page.dart';
+import 'app/listTrips/page/dogs_ride_page.dart';
 
 
 import 'app/widgets/login.dart';
@@ -36,13 +36,10 @@ class MyApp extends StatelessWidget {
         primaryColorDark: const Color(0xFF1C2331),
         primaryColorLight: const Color.fromRGBO(48, 51, 107, 1),
       ),
-
-      // home: const DogsRide(),
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginPage(),
-        '/create': (context) =>  CreateTrip(),
-
+        '/': (context) => DogsRidePage(),
+        '/create': (context) =>  CreateTripPage(),
       },
     );
   }

@@ -4,9 +4,11 @@ class SelectStarting extends StatelessWidget {
   SelectStarting(
       {super.key,
       required this.dropdownValue,
-      required this.updateDeparturePoint, required this.manualAddress});
+      required this.updateDeparturePoint, required this.manualAddress,
+      required this.currentAddress});
   String dropdownValue; // point de départ
   String manualAddress; // Adresse saisi par l'utilisateur
+  String? currentAddress;
   Function updateDeparturePoint; // Changement du point de départ
 
   List<String> list = <String>[
@@ -87,22 +89,41 @@ class SelectStarting extends StatelessWidget {
           height: 10,
         ),
         SingleChildScrollView(
-          child: dropdownValue == 'Choisir une adresse'
-              ? TextField(
+          child: Column(
+            children: [
+              if (dropdownValue == 'Ma position actuelle')
+                TextField(
+                  // Entrer la date par autocompletion avec google
+                  enabled: false,
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).primaryColor,
+                        width: 2.0,
+                      ),
+                    ),
+                    border: const OutlineInputBorder(),
+                    hintText: '$currentAddress',
+                  ),
+                ),
+              if (dropdownValue == 'Choisir une adresse')
+                TextField(
                   // Entrer la date par autocompletion avec google
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor, width: 2.0),
+                        color: Theme.of(context).primaryColor,
+                        width: 2.0,
+                      ),
                     ),
                     border: const OutlineInputBorder(),
                     hintText: 'Entrer l\'adresse',
                   ),
-                )
-              : (const SizedBox(
-                  height: 1,
-                )),
+                ),
+            ],
+          ),
         )
+
       ],
     );
   }

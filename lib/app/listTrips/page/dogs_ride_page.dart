@@ -2,22 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/utils/globals.dart';
-import 'package:i2_i3_g9/app/widgets/filter_trips.dart';
-import 'package:i2_i3_g9/app/widgets/list_rides.dart';
-import 'package:i2_i3_g9/app/widgets/map_overview.dart';
-import 'package:i2_i3_g9/app/widgets/nav-bar.dart';
+import '../widgets/filter_trips.dart';
+import '../widgets/list_rides.dart';
+import '../widgets/map_overview.dart';
+import '../../navbar/widgets/nav-bar.dart';
 
-class DogsRide extends StatefulWidget {
-  DogsRide({Key? key}) : super(key: key);
+class DogsRidePage extends StatefulWidget {
+  DogsRidePage({Key? key}) : super(key: key);
 
   @override
-  State<DogsRide> createState() => _DogsRideState();
+  State<DogsRidePage> createState() => _DogsRideStatePage();
 
   final Stream<QuerySnapshot> ridesCollection =
       RidesRepository().getRidesForUser(Globals().idUser);
 }
 
-class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
+class _DogsRideStatePage extends State<DogsRidePage> with TickerProviderStateMixin {
   int _selectedIndex = 0;
   late AnimationController
       _increaseController; // Controlleur pour la liste des balades
