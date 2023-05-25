@@ -1,20 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
+import 'package:i2_i3_g9/app/utils/globals.dart';
 import 'package:i2_i3_g9/app/widgets/filter_trips.dart';
 import 'package:i2_i3_g9/app/widgets/list_rides.dart';
 import 'package:i2_i3_g9/app/widgets/map_overview.dart';
-import 'package:i2_i3_g9/app/models/ride.dart';
 import 'package:i2_i3_g9/app/widgets/nav-bar.dart';
-import 'package:i2_i3_g9/app/widgets/view_more.dart';
 
 class DogsRide extends StatefulWidget {
-  const DogsRide({Key? key}) : super(key: key);
+  DogsRide({Key? key}) : super(key: key);
 
   @override
   State<DogsRide> createState() => _DogsRideState();
+
+  final Stream<QuerySnapshot> ridesCollection =
+      RidesRepository().getRidesForUser(Globals().idUser);
 }
 
 class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
-  final List<Ride> _rides = <Ride>[];
   int _selectedIndex = 0;
   late AnimationController
       _increaseController; // Controlleur pour la liste des balades
@@ -29,6 +32,13 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  late String _description = '';
+  void _updateDescription(String text) {
+    setState(() {
+      _description = text;
     });
   }
 
@@ -95,11 +105,6 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    // Valeur temp
-    var ride = new Ride('LP', 'Limoges', 'Bordeaux');
-    var ride2 = new Ride('TD', 'Limoges', 'Brive');
-    _rides.add(ride);
-    _rides.add(ride2);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -135,7 +140,8 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
                 ),
                 child: SizedBox(
                   height: 25,
-                  child: ListRide(),
+                  child: ListRide(
+                      ridesCollection: widget.ridesCollection),
                 )),
           ),
         ],
@@ -145,8 +151,7 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
           showModalBottomSheet<void>(
             context: context,
             shape: const RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.vertical(top: Radius.circular(20.0)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
             ),
             builder: (BuildContext context) {
               return const FilterTrips();
@@ -155,7 +160,10 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
         },
         backgroundColor: const Color.fromRGBO(48, 51, 107, 0.8),
         mini: true,
-        child: const ImageIcon(AssetImage('assets/images/filter.png'),size: 18,),
+        child: const ImageIcon(
+          AssetImage('assets/images/filter.png'),
+          size: 18,
+        ),
       ),
       bottomNavigationBar: NavBar(
         // Bottom sheet navigation
@@ -165,28 +173,3 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
     );
   }
 }
-
-// TextFormField(
-// decoration: InputDecoration(
-// labelText: 'Nom',
-// hintText: 'Entrez votre nom',
-// ),
-// onChanged: (value) {
-// // gérer le changement de texte
-// },
-// ),
-
-// Container(
-//   height: screenHeight * sizeContainer,
-//   child: ListView.separated(
-//     padding: const EdgeInsets.all(8),
-//     itemCount: _rides.length,
-//     itemBuilder: (BuildContext context, int index){
-//       return ListRide(image: _rides[index].image, depart: _rides[index].depart,
-//           destination: _rides[index].destination,
-//           onPressedMessage: (){},
-//           onPressedDone: (){});
-//     },
-//     separatorBuilder: (BuildContext context, int index) => const Divider(),
-//   ),
-// ),

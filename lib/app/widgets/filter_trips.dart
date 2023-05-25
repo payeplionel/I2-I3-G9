@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 class FilterTrips extends StatefulWidget {
   const FilterTrips({super.key});
@@ -108,65 +107,3 @@ class _FilterTripsState extends State<FilterTrips> {
     );
   }
 }
-
-// Column(
-// children: [
-// Container(
-// margin: const EdgeInsets.only(
-// left: 30.0, right: 30.0, top: 10.0, bottom: 10.0),
-// child: Row(
-// mainAxisAlignment: MainAxisAlignment.spaceBetween,
-// children: const [
-// Text('Filtrer',
-// style: TextStyle(
-// fontSize: 18, fontWeight: FontWeight.w600)),
-// ],
-// ),
-// ),
-// const Divider(
-// height: 2.0,
-// ),
-// Expanded(
-// flex: 1,
-// child: Container(
-// color: Colors.redAccent,
-// margin: const EdgeInsets.only(
-// left: 30.0, right: 30.0, top: 10.0, bottom: 10.0),
-// child: Column(
-// crossAxisAlignment: CrossAxisAlignment.end,
-// children: const [
-// Text(
-// 'Trier par ',
-// style: TextStyle(
-// fontSize: 16, fontWeight: FontWeight.w500),
-// )
-// ],
-// ),
-// ))
-// ],
-// ),
-// Row(
-// children: [
-// Expanded(
-// child: Container(
-// margin: const EdgeInsets.symmetric(
-// horizontal: 40.0, vertical: 10.0),
-// child: OutlinedButton(
-// onPressed: () {},
-// style: OutlinedButton.styleFrom(
-// backgroundColor: Theme.of(context).primaryColor,
-// shape: RoundedRectangleBorder(
-// borderRadius: BorderRadius.circular(20),
-// ),
-// ),
-// child: const Padding(
-// padding: EdgeInsets.all(12.0),
-// child: Text(
-// 'Filtrer',
-// style: TextStyle(color: Colors.white, fontSize: 14),
-// ),
-// ),
-// ),
-// )),
-// ],
-// )
