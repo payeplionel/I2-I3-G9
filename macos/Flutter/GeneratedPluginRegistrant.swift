@@ -7,6 +7,7 @@ import Foundation
 
 import cloud_firestore
 import firebase_core
+import firebase_auth
 import geolocator_apple
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
