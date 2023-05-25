@@ -1,13 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app/createTrip/page/create_trip_page.dart';
 import 'app/listTrips/page/dogs_ride_page.dart';
 
+
+import 'app/widgets/login.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -36,7 +40,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => DogsRidePage(),
         '/create': (context) =>  CreateTripPage(),
-
       },
     );
   }
