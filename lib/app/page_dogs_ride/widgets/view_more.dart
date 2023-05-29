@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import '../models/users.dart';
-import '../utils/globals.dart';
+import '../../models/users.dart';
+import '../../utils/globals.dart';
 
 class ViewMore extends StatefulWidget {
   ViewMore(

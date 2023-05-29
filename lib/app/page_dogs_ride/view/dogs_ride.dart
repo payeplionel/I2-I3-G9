@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/utils/globals.dart';
-import 'package:i2_i3_g9/app/widgets/filter_trips.dart';
-import 'package:i2_i3_g9/app/widgets/list_rides.dart';
-import 'package:i2_i3_g9/app/widgets/map_overview.dart';
-import 'package:i2_i3_g9/app/widgets/nav-bar.dart';
+import 'package:i2_i3_g9/app/page_dogs_ride/widgets/filter_trips.dart';
+import 'package:i2_i3_g9/app/page_dogs_ride/widgets/list_rides.dart';
+import 'package:i2_i3_g9/app/page_dogs_ride/widgets/map_overview.dart';
+import 'package:i2_i3_g9/app/page_navbar/view/nav-bar.dart';
 
 class DogsRide extends StatefulWidget {
   DogsRide({Key? key}) : super(key: key);

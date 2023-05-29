@@ -6,10 +6,10 @@ import 'package:i2_i3_g9/app/models/rides.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/repository/usersRepository.dart';
 import 'package:i2_i3_g9/app/utils/globals.dart';
-import 'package:i2_i3_g9/app/widgets/date_starting.dart';
-import 'package:i2_i3_g9/app/widgets/list_pets.dart';
-import 'package:i2_i3_g9/app/widgets/select_starting.dart';
-import '../widgets/nav-bar.dart';
+import 'package:i2_i3_g9/app/page_create_trip/widgets/date_starting.dart';
+import 'package:i2_i3_g9/app/page_create_trip/widgets/list_pets.dart';
+import 'package:i2_i3_g9/app/page_create_trip/widgets/select_starting.dart';
+import '../../page_navbar/view/nav-bar.dart';
 
 class CreateTrip extends StatefulWidget {
   CreateTrip({Key? key}) : super(key: key);

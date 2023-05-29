@@ -5,8 +5,8 @@ import 'package:i2_i3_g9/app/models/rides.dart';
 import 'package:i2_i3_g9/app/models/users.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/repository/usersRepository.dart';
-import 'package:i2_i3_g9/app/widgets/view_more.dart';
-import '../utils/globals.dart';
+import 'package:i2_i3_g9/app/page_dogs_ride/widgets/view_more.dart';
+import '../../utils/globals.dart';
 
 class ListRide extends StatelessWidget {
   final Stream<QuerySnapshot> ridesCollection;
