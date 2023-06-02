@@ -1,6 +1,6 @@
 // import '../models/address.dart';
-// import '../models/pets.dart';
-// import '../models/users.dart';
+// import '../models/pet.dart';
+// import '../models/user.dart';
 //
 // class Mock {
 //   Users user = Users(

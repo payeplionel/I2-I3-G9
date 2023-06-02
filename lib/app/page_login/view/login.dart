@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:i2_i3_g9/app/page_sign_up/view/sign_up_page.dart';
+import 'package:i2_i3_g9/app/utils/globals.dart';
 import '../../page_dogs_ride/view/dogs_ride.dart';
 
 class LoginPage extends StatelessWidget {
@@ -29,9 +30,9 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             Image.asset(
-              'assets/images/greeting.png',
-              width: screenHeight * 0.15,
-              height: screenHeight * 0.15,
+              'assets/images/pets.gif',
+              width: screenHeight * 0.2,
+              height: screenHeight * 0.2,
             ),
             const SizedBox(height: 10),
             TextField(
@@ -174,7 +175,9 @@ class LoginPage extends StatelessWidget {
       // vous pouvez utiliser la méthode signInWithEmailAndPassword de FirebaseAuth
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: username, password: password);
-
+      String? userid = userCredential.user?.uid;
+      Globals().idUser = userid!;
+      print(userid);
       // Connexion réussie, redirigez l'utilisateur vers la page d'accueil
       Navigator.push(
         context,

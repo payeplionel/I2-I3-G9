@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import '../../models/users.dart';
+import '../../models/user.dart';
 import '../../utils/globals.dart';
 
 class ViewMore extends StatefulWidget {
@@ -19,7 +19,7 @@ class ViewMore extends StatefulWidget {
   String documentId;
   Function dayOfRide;
   Function hourOfRide;
-  Future<Users?> users;
+  Future<User?> users;
   Function getPetsOfRide;
 
   @override
@@ -41,10 +41,10 @@ class _ViewMore extends State<ViewMore> {
             child: Row(
               // Nom et Prenom de la personne qui propose la balade
               children: [
-                FutureBuilder<Users?>(
+                FutureBuilder<User?>(
                   future: widget.users,
                   builder:
-                      (BuildContext context, AsyncSnapshot<Users?> snapshot) {
+                      (BuildContext context, AsyncSnapshot<User?> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Shimmer(
                         duration: const Duration(milliseconds: 1500),
@@ -60,7 +60,7 @@ class _ViewMore extends State<ViewMore> {
                         return Text(
                             'Une erreur s\'est produite : ${snapshot.error}');
                       } else {
-                        final Users? user = snapshot.data;
+                        final User? user = snapshot.data;
                         return Row(
                           children: [
                             Text(

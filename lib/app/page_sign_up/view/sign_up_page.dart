@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:i2_i3_g9/app/page_sign_up/widgets/autocomplete_address.dart';
+import 'package:i2_i3_g9/app/models/user.dart';
+import 'package:i2_i3_g9/app/page_sign_up/view/sign_pets.dart';
+import 'package:i2_i3_g9/app/page_sign_up/view/sign_up_auth.dart';
+import 'package:i2_i3_g9/app/page_sign_up/view/sign_up_personnal_informations.dart';
 import 'package:i2_i3_g9/app/page_login/view/login.dart';
+import 'package:i2_i3_g9/app/repository/usersRepository.dart';
 
-import '../../models/pets.dart';
+import '../../models/address.dart';
+import '../../models/pet.dart';
 import '../../utils/constants.dart';
 import '../../utils/network_util.dart';
 
@@ -17,15 +22,22 @@ enum SingingCharacter { madame, monsieur }
 
 class _SignUpState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
-  final _formKeyPet = GlobalKey<FormState>();
   final TextEditingController _petName = TextEditingController();
   final TextEditingController _petAge = TextEditingController();
   final TextEditingController _petBreed = TextEditingController();
   final TextEditingController _petDescription = TextEditingController();
   final TextEditingController _controllerAddress = TextEditingController();
+  final TextEditingController _controllerFirstname = TextEditingController();
+  final TextEditingController _controllerLastname = TextEditingController();
+  final TextEditingController _controllerNumber = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerPasswordVerif =
+      TextEditingController();
 
   int selectedValue = 1;
-  List<Pets> petsList = [];
+  bool addPet = false;
+  List<Pet> petsList = [];
   List<String> typeList = <String>[
     // List de choix pour le type d'animal
     'chien',
@@ -34,6 +46,7 @@ class _SignUpState extends State<SignUpPage> {
   ];
   String typeSelected = 'chien';
   int petTouched = -1;
+  int navigate = 1;
 
   bool isValidName(String val) {
     if (val == null || val.isEmpty) {
@@ -63,9 +76,7 @@ class _SignUpState extends State<SignUpPage> {
     Uri uri = Uri.https("maps.googleapis.com",
         "maps/api/place/autocomplete/json", {"input": query, "key": apiKey});
     String? response = await NetworkUtils.fetchUrl(uri);
-    if (response != null) {
-
-    }
+    if (response != null) {}
   }
 
   void valueChange(String value) {
@@ -74,602 +85,194 @@ class _SignUpState extends State<SignUpPage> {
     });
   }
 
+  void changeValue(int value) {
+    setState(() {
+      selectedValue = value;
+    });
+  }
+
+  void navigationSign(int value) {
+    setState(() {
+      navigate = value;
+    });
+  }
+
+  void isAddSection(bool value){
+    setState(() {
+      addPet = value;
+    });
+  }
+
+  void addPetToList(Pet pet){
+    setState(() {
+      petsList.add(pet);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-                    },
-                    icon: const ImageIcon(AssetImage('assets/images/left.png')),
-                  ),
-                ],
-              ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 30),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
+                  icon: const ImageIcon(AssetImage('assets/images/left.png')),
+                ),
+              ],
             ),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-                children: [
-                  Row(
-                    children: [
-                      Radio(
-                        value: 1,
-                        groupValue: selectedValue,
-                        fillColor: MaterialStateColor.resolveWith(
-                            (states) => Theme.of(context).primaryColor),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedValue = 1;
-                          });
-                        },
-                      ),
-                      Expanded(
-                        child: ListTile(
-                          title: const Text('Madame'),
-                          onTap: () {
-                            setState(() {
-                              selectedValue = 1;
-                            });
-                          },
-                        ),
-                      ),
-                      Radio(
-                        value: 2,
-                        groupValue: selectedValue,
-                        fillColor: MaterialStateColor.resolveWith(
-                            (states) => Theme.of(context).primaryColor),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedValue = 2;
-                          });
-                        },
-                      ),
-                      Expanded(
-                          child: ListTile(
-                        title: const Text('Monsieur'),
-                        onTap: () {
-                          setState(() {
-                            selectedValue = 2;
-                          });
-                        },
-                      )),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 50,
-                          child: TextField(
-                            style: TextStyle(fontSize: screenHeight * 0.02),
-                            decoration: InputDecoration(
-                              labelText: 'Nom',
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 1.5,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 1.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: SizedBox(
-                          height: 50,
-                          child: TextField(
-                            style: TextStyle(fontSize: screenHeight * 0.02),
-                            decoration: InputDecoration(
-                              labelText: 'Prénom',
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 1.5,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 1.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
+          ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+              children: [
+                (navigate == 1)
+                    ? PersonnalInformation(
+                  selectedValue: selectedValue,
+                  changeValue: changeValue,
+                  valueChange: valueChange,
+                  controllerAddress: _controllerAddress,
+                  navigationSign: navigationSign,
+                  controllerFirstname: _controllerFirstname,
+                  controllerLastname: _controllerLastname,
+                  controllerNumber: _controllerNumber,
+                )
+                    : const SizedBox.shrink(),
+                (navigate == 2)
+                    ? SignAuth(
+                  navigationSign: navigationSign,
+                  controllerEmail: _controllerEmail,
+                  controllerPassword: _controllerPassword,
+                  controllerPasswordVerif: _controllerPasswordVerif,
+                )
+                    : const SizedBox.shrink(),
+                (navigate == 3)
+                    ? Column(
+                  children: [
+                    SignPets(
+                        isValidName: isValidName,
+                        petAge: _petAge,
+                        petBreed: _petBreed,
+                        petDescription: _petDescription,
+                        petName: _petName,
+                        typeSelected: typeSelected,
+                        typeList: typeList,
+                        petsList: petsList,
+                        selectPet: selectPet,
+                        petTouched: petTouched,
+                        deletePetInList: deletePetInList,
+                        addPet: addPet,
+                        isAddSection: isAddSection,
+                        addPetToList: addPetToList,
+                    ),
 
-                  AutoAddress(controllerAddress: _controllerAddress, valueChange: valueChange,),
-
-                  const SizedBox(height: 10),
-                  TextField(
-                    style: TextStyle(fontSize: screenHeight * 0.02),
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    style: TextStyle(fontSize: screenHeight * 0.02),
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Mot de passe',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    style: TextStyle(fontSize: screenHeight * 0.02),
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Vérifier votre mot de passe',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    style: TextStyle(fontSize: screenHeight * 0.02),
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'Numéro de téléphone',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          showDialog<String>(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                              title: const Center(
-                                child: Text(
-                                  'Ajouter un compagnon 😸',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                              content: Form(
-                                key: _formKeyPet,
-                                child: SizedBox(
-                                  height: 500,
-                                  child: ListView(
-                                    children: [
-                                      TextFormField(
-                                        style: TextStyle(
-                                            fontSize: screenHeight * 0.02),
-                                        validator: (value) {
-                                          if (!isValidName(value!)) {
-                                            print(!isValidName(value!));
-                                            return 'Enter valid email';
-                                          }
-                                        },
-                                        controller: _petName,
-                                        keyboardType: TextInputType.text,
-                                        decoration: InputDecoration(
-                                          labelText: 'Nom',
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      TextFormField(
-                                        controller: _petAge,
-                                        style: TextStyle(
-                                            fontSize: screenHeight * 0.02),
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                          labelText: 'Age',
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter some text';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      TextFormField(
-                                        controller: _petBreed,
-                                        style: TextStyle(
-                                            fontSize: screenHeight * 0.02),
-                                        keyboardType: TextInputType.text,
-                                        decoration: InputDecoration(
-                                          labelText: 'Race',
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter some text';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      DropdownButtonFormField(
-                                          // Sélection de son lieu de départ
-                                          decoration: InputDecoration(
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                  width: 2.0),
-                                            ),
-                                            focusColor: Colors.white,
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                  width: 1),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                  width: 1),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                          ),
-                                          value: typeSelected,
-                                          // icon: Icon(getSelectionIcon(),
-                                          //     size: 18, color: Theme.of(context).primaryColor),
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          items: typeList
-                                              .map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? value) {
-                                            typeSelected = value!;
-                                          }),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      TextFormField(
-                                        controller: _petDescription,
-                                        maxLines: 5,
-                                        style: TextStyle(
-                                            fontSize: screenHeight * 0.02),
-                                        keyboardType: TextInputType.text,
-                                        decoration: InputDecoration(
-                                          labelText: 'Description',
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter some text';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, 'Cancel'),
-                                  child: Text(
-                                    'Annuler',
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    // print(_formKeyPet.currentState!.validate());
-                                    Pets pet = Pets(
-                                        name: _petName.value.text,
-                                        age: int.parse(_petAge.value.text),
-                                        breed: _petBreed.value.text,
-                                        description: _petDescription.value.text,
-                                        referenceId: '',
-                                        type: typeSelected);
-                                    petsList.add(pet);
-
-                                    Navigator.pop(context, 'OK');
-                                  },
-                                  child: Text(
-                                    'Créer',
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        child: Chip(
-                          label: Text(
-                            '🦮 Ajouter',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16.0,
-                                color: Theme.of(context).primaryColor),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 90.0,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.all(8),
-                        itemCount: petsList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {
-                              selectPet(index);
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(4.0),
-                              width: 70.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: const Color.fromRGBO(156, 136, 255, 1),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  (petsList[index].type == 'chien')
-                                      ? CircleAvatar(
-                                          backgroundColor: petTouched == index
-                                              ? Colors.greenAccent
-                                              : const Color.fromRGBO(
-                                                  113, 88, 226, 1),
-                                          child: const Text(
-                                            '🐶',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        )
-                                      : CircleAvatar(
-                                          backgroundColor: petTouched == index
-                                              ? Colors.greenAccent
-                                              : const Color.fromRGBO(
-                                                  113, 88, 226, 1),
-                                          child: const Text(
-                                            '😸',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    petsList[index].name,
-                                    style: const TextStyle(color: Colors.white),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                  ),
-                  const SizedBox(height: 10),
-                  (petTouched != -1)
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    (!addPet)
+                    ? Column(
+                      children: [
+                        Row(
                           children: [
-                            // Filled tonal icon button
-                            Ink(
-                              decoration: const ShapeDecoration(
-                                color: Color.fromRGBO(162, 155, 254,
-                                    1), // Set the background color here
-                                shape: CircleBorder(),
-                              ),
-                              child: IconButton(
-                                icon: const ImageIcon(
-                                    AssetImage('assets/images/pencil.png')),
+                            Expanded(
+                              child: OutlinedButton(
                                 onPressed: () {
-                                  // Handle button press
+                                  // placeAutocomplete("3 avenue ernest ruben");
+                                  navigationSign(2);
                                 },
-                                color: Colors.white, // Set the icon color
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Text(
+                                    'Retour',
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: screenHeight * 0.02,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                            const SizedBox(
-                              width: 50,
-                            ),
-                            Ink(
-                              decoration: const ShapeDecoration(
-                                color: Color.fromRGBO(255, 118, 117,
-                                    0.8), // Set the background color here
-                                shape: CircleBorder(),
-                              ),
-                              child: IconButton(
-                                icon: const ImageIcon(
-                                    AssetImage('assets/images/trash.png')),
-                                onPressed: () {
-                                  deletePetInList(petTouched);
-                                },
-                                color: Colors.white, // Set the icon color
-                              ),
-                            )
                           ],
-                        )
-                      : const SizedBox(height: 10),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // placeAutocomplete("3 avenue ernest ruben");
-                          },
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Text(
-                              'Créer votre compte',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: screenHeight * 0.02,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  // placeAutocomplete("3 avenue ernest ruben");
+                                  debugPrint('${_controllerLastname.value.text} '
+                                      ' ${_controllerFirstname.value.text}'
+                                      ' ${_controllerEmail.value.text}'
+                                      ' ${_controllerPassword.value.text}'
+                                      ' ${_controllerNumber.value.text}');
+                                  User user = User(
+                                      email: _controllerEmail.value.text,
+                                      firstname: _controllerFirstname.value.text,
+                                      lastname: _controllerLastname.value.text,
+                                      gender: selectedValue == 1 ? 'F' : 'M',
+                                      password: _controllerPassword.value.text,
+                                      address:  Address(
+                                          city: 'Brive',
+                                          country: 'France',
+                                          number: '3',
+                                          postal: '19360',
+                                          street: 'Av de l\'industrie'
+                                      ),
+                                  );
+                                  UsersRepository().addUser(user, petsList);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LoginPage()),
+                                  );
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor:
+                                  Theme.of(context).primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Text(
+                                    'Créer votre compte',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: screenHeight * 0.02,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
+                      ],
+                    )
+                    : const SizedBox.shrink(),
+
+                    const SizedBox(height: 10),
+                  ],
+                )
+                    : const SizedBox.shrink(),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

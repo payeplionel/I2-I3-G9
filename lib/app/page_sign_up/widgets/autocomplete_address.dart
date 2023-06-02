@@ -18,19 +18,12 @@ class AutoAddress extends StatelessWidget {
         }
       },
       style: TextStyle(fontSize: screenHeight * 0.02),
-      decoration: InputDecoration(
-        labelText: 'Adresse',
+      decoration: const InputDecoration(
+        filled: true,
+        fillColor: Color.fromRGBO(162, 155, 254, 0.2),
+        hintText: 'Adresse',
         border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).primaryColor,
-            width: 1.5,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).primaryColor,
-            width: 1.5,
-          ),
+          borderSide: BorderSide.none,
         ),
       ),
     );
