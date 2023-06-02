@@ -1,5 +1,5 @@
-class Pets{
-  Pets({
+class Pet{
+  Pet({
     required this.type,
     required this.age,
     required this.breed,
@@ -23,8 +23,8 @@ class Pets{
 
   };
 
-  factory Pets.fromJson(Map<String, dynamic> json) {
-    return Pets(
+  factory Pet.fromJson(Map<String, dynamic> json) {
+    return Pet(
       type: json['type'] as String,
       age: json['age'] as int,
       breed: json['breed'] as String,

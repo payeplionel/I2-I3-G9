@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:i2_i3_g9/app/models/pets.dart';
+import 'package:i2_i3_g9/app/models/pet.dart';
 import 'package:i2_i3_g9/app/models/rides.dart';
 
 class RidesRepository {
@@ -19,9 +19,9 @@ class RidesRepository {
 
   Future<QuerySnapshot<Object?>> getPetsOfRide(Rides ride) async {
     CollectionReference userPetsCollection = FirebaseFirestore.instance
-        .collection('users')
+        .collection('user')
         .doc(ride.creator)
-        .collection('pets');
+        .collection('pet');
     QuerySnapshot<Object?> querySnapshot = await userPetsCollection
         .where(FieldPath.documentId, whereIn: ride.pets)
         .get();
@@ -44,15 +44,15 @@ class RidesRepository {
       final documents = querySnap.docs;
       if (documents.isNotEmpty) {
         DocumentSnapshot petDocument = await FirebaseFirestore.instance
-            .collection('users')
+            .collection('user')
             .doc(userId)
-            .collection('pets')
+            .collection('pet')
             .doc(petId)
             .get();
         if (petDocument.exists) {
           final Map<String, dynamic> data =
               petDocument.data() as Map<String, dynamic>;
-          final Pets pet = Pets.fromJson(data);
+          final Pet pet = Pet.fromJson(data);
           result += ' ${pet.name},';
         }
       }

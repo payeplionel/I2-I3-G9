@@ -84,13 +84,13 @@ flutter:
     - assets/images/settings-selected.png
     - assets/images/filter.png
     - assets/images/greeting.png
-    - assets/images/greeting.gif
     - assets/images/google.png
     - assets/images/left.png
     - assets/images/lock.png
     - assets/images/envelope.png
     - assets/images/trash.png
     - assets/images/pencil.png
+    - assets/images/pets.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,8 +1,8 @@
 import 'package:i2_i3_g9/app/models/address.dart';
-import 'package:i2_i3_g9/app/models/pets.dart';
+import 'package:i2_i3_g9/app/models/pet.dart';
 import 'package:i2_i3_g9/app/models/rides.dart';
 
-class Users {
+class User {
   String email;
   String firstname;
   String lastname;
@@ -13,7 +13,7 @@ class Users {
   // Map<String,Pets> pets;
   // List<Rides> rides;
 
-  Users({
+  User({
     required this.email,
     required this.firstname,
     required this.lastname,
@@ -36,8 +36,8 @@ class Users {
     // 'rides': _ridesList(rides),
   };
 
-  factory Users.fromJson(Map<String, dynamic> json) {
-    return Users(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       email: json['email'] as String,
       firstname: json['firstname'] as String,
       lastname: json['lastname'] as String,
@@ -49,11 +49,11 @@ class Users {
     );
   }
 
-  static Map<String, Pets> _convertPets(Map<String, dynamic> petsMap) {
-    final pets = <String, Pets>{};
+  static Map<String, Pet> _convertPets(Map<String, dynamic> petsMap) {
+    final pets = <String, Pet>{};
 
     petsMap.forEach((key, value) {
-      pets[key] = Pets.fromJson(value as Map<String, dynamic>);
+      pets[key] = Pet.fromJson(value as Map<String, dynamic>);
     });
 
     return pets;
@@ -70,7 +70,7 @@ class Users {
     return rides;
   }
 
-  List<Map<String, dynamic>>? _petsList(Map<String, Pets>? pets) {
+  List<Map<String, dynamic>>? _petsList(Map<String, Pet>? pets) {
     if (pets == null) {
       return null;
     }

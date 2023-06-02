@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:i2_i3_g9/app/models/rides.dart';
-import 'package:i2_i3_g9/app/models/users.dart';
+import 'package:i2_i3_g9/app/models/user.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/repository/usersRepository.dart';
 import 'package:i2_i3_g9/app/page_dogs_ride/widgets/view_more.dart';
@@ -38,9 +38,9 @@ class ListRide extends StatelessWidget {
     return formatter.format(date);
   }
 
-  Future<Users?> userNames(Map<String, dynamic> ride) async {
+  Future<User?> userNames(Map<String, dynamic> ride) async {
     Rides rideTemp = Rides.fromJson(ride);
-    Users? futureUser = await UsersRepository().getUserById(rideTemp.creator);
+    User? futureUser = await UsersRepository().getUserById(rideTemp.creator);
     return futureUser;
   }
 
