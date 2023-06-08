@@ -12,7 +12,7 @@ class ListRide extends StatelessWidget {
   final Stream<QuerySnapshot> ridesCollection;
   ListRide(
       {Key? key,
-      required this.ridesCollection})
+      required this.ridesCollection,})
       : super(key: key);
 
 

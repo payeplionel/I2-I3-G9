@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Rides {
@@ -26,6 +28,10 @@ class Rides {
   String creator;
   Timestamp date;
   Timestamp time;
+
+
+
+
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'address': address,
