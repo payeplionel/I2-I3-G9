@@ -24,11 +24,11 @@ class settingPage extends StatefulWidget {
 
 class _settingPageState extends State<settingPage> {
   int _selectedIndex = 3;
-  int selectedValue = 1;
-  String petTouched = '';
-  bool addPet = false;
-  List<Pet> petsList = [];
-  String typeSelected = 'chien';
+  int selectedValue = 1; // Selection du genre
+  String petTouched = ''; // animal séléctionné
+  bool addPet = false; // Vérifier si nous sommes sur l'interface d'ajout des animaux
+  List<Pet> petsList = []; // liste des animaux
+  String typeSelected = 'chien'; // type d'un animal par défaut
 
   final TextEditingController _petName = TextEditingController();
   final TextEditingController _petAge = TextEditingController();
@@ -44,7 +44,7 @@ class _settingPageState extends State<settingPage> {
   final TextEditingController _controllerPhone = TextEditingController();
   bool isAddressChanged = false;
 
-  void addressChanged() {
+  void addressChanged() { // lorsqu'on a changé d'adresse
     setState(() {
       isAddressChanged = true;
     });
@@ -64,31 +64,31 @@ class _settingPageState extends State<settingPage> {
     'autre'
   ];
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index) { // Lorsqu'on choisit un animal
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  void changeValue(int value) {
+  void changeValue(int value) { // Lorsqu'on choisit un sexe
     setState(() {
       selectedValue = value;
     });
   }
 
-  void valueChange(String value) {
+  void valueChange(String value) { // Autocompletion de l'adresse
     setState(() {
       RidesRepository().placeAutocomplete(value);
     });
   }
 
-  void isAddSection(bool value) {
+  void isAddSection(bool value) { // Si nous sommes dans la section d'ajout d'animaux
     setState(() {
       addPet = value;
     });
   }
 
-  void addPetToList(Pet pet) {
+  void addPetToList(Pet pet) { // Ajouter un animal de compagnie
     setState(() {
       petsList.add(pet);
     });
@@ -101,7 +101,7 @@ class _settingPageState extends State<settingPage> {
     return true;
   }
 
-  void selectPet(String ind) {
+  void selectPet(String ind) { // Séléctionner un animal
     setState(() {
       if (petTouched == ind) {
         petTouched = '';
@@ -114,7 +114,7 @@ class _settingPageState extends State<settingPage> {
   Address address =
       Address(city: '', country: '', number: '', postal: '', street: '');
 
-  // void deletePetInList(int ind) {
+  // void deletePetInList(int ind) { //Supprimer un animal
   //   setState(() {
   //     petsList.removeAt(ind);
   //     petTouched = -1;
@@ -657,7 +657,8 @@ class _settingPageState extends State<settingPage> {
                         if (potentialAddress.length == 1) {
                           String firstPotentialAddress = potentialAddress.first;
 
-                          List<String> adresseDivisee = firstPotentialAddress.split(', ');
+                          List<String> adresseDivisee =
+                              firstPotentialAddress.split(', ');
 
                           String rue = adresseDivisee[0];
                           String codePostalVille = adresseDivisee[1];
@@ -675,7 +676,8 @@ class _settingPageState extends State<settingPage> {
                             numeroRue = rue;
                           }
 
-                          List<String> codePostalVilleDivise = codePostalVille.split(' ');
+                          List<String> codePostalVilleDivise =
+                              codePostalVille.split(' ');
                           String codePostal = codePostalVilleDivise[0];
                           String ville = codePostalVilleDivise[1];
 
@@ -695,7 +697,7 @@ class _settingPageState extends State<settingPage> {
                               password: '');
                           UsersRepository().updateUser(user);
                         }
-                      }else{
+                      } else {
                         userdb.User user = userdb.User(
                             email: _controllerEmail.value.text,
                             firstname: _controllerFirstname.value.text,

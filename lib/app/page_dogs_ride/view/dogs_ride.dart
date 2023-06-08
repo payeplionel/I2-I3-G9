@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/utils/globals.dart';
 import 'package:i2_i3_g9/app/page_dogs_ride/widgets/filter_trips.dart';
@@ -41,6 +42,7 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
       _description = text;
     });
   }
+  Position? _currentPosition;
 
   @override
   void initState() {
@@ -77,6 +79,7 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
         }
       });
     });
+    _getCurrentPosition();
   }
 
   @override
@@ -102,6 +105,50 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
     isJourneys = false; // La liste des baldes ne s'est pas agrandi
   }
 
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+        print("oui");
+        debugPrint('${_currentPosition!.longitude} ${_currentPosition!.latitude}');
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -121,7 +168,9 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
                   },
             child: SizedBox(
               height: screenHeight * sizeContainer,
-              child: MapOverview(), // Affichage de la Google Map
+              child: MapOverview(
+                currentPosition: _currentPosition,
+              ), // Affichage de la Google Map
             ),
           )),
           NotificationListener<ScrollNotification>(
