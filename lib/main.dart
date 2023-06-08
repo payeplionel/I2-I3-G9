@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:i2_i3_g9/app/page_create_trip/view/create_trip.dart';
 import 'package:i2_i3_g9/app/page_dogs_ride/view/dogs_ride.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:i2_i3_g9/app/page_setting/view/setting_page.dart';
 
 import 'app/page_login/view/login.dart';
 Future<void> main() async {
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => DogsRide(),
         '/create': (context) =>  CreateTrip(),
         '/login': (context) => LoginPage(),
+        '/setting': (context) => settingPage(),
       },
     );
   }

@@ -4,12 +4,11 @@ import 'package:i2_i3_g9/app/page_sign_up/view/sign_pets.dart';
 import 'package:i2_i3_g9/app/page_sign_up/view/sign_up_auth.dart';
 import 'package:i2_i3_g9/app/page_sign_up/view/sign_up_personnal_informations.dart';
 import 'package:i2_i3_g9/app/page_login/view/login.dart';
+import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/repository/usersRepository.dart';
 
 import '../../models/address.dart';
 import '../../models/pet.dart';
-import '../../utils/constants.dart';
-import '../../utils/network_util.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -26,7 +25,9 @@ class _SignUpState extends State<SignUpPage> {
   final TextEditingController _petAge = TextEditingController();
   final TextEditingController _petBreed = TextEditingController();
   final TextEditingController _petDescription = TextEditingController();
-  final TextEditingController _controllerAddress = TextEditingController();
+  final TextEditingController _controllerPostal = TextEditingController();
+  final TextEditingController _controllerCity = TextEditingController();
+  final TextEditingController _controllerStreet = TextEditingController();
   final TextEditingController _controllerFirstname = TextEditingController();
   final TextEditingController _controllerLastname = TextEditingController();
   final TextEditingController _controllerNumber = TextEditingController();
@@ -34,28 +35,35 @@ class _SignUpState extends State<SignUpPage> {
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerPasswordVerif =
       TextEditingController();
+  bool isAddressChanged = false;
 
-  int selectedValue = 1;
-  bool addPet = false;
-  List<Pet> petsList = [];
+  void addressChanged(){
+    setState(() {
+      isAddressChanged= true;
+    });
+  }
+
+  int selectedValue = 1; // Sélection du genre
+  bool addPet = false; // Affichage du formulaire pour ajouter un animal
+  List<Pet> petsList = []; // Tableau de pets d'un utilisateur
   List<String> typeList = <String>[
     // List de choix pour le type d'animal
     'chien',
     'chat',
     'autre'
   ];
-  String typeSelected = 'chien';
-  int petTouched = -1;
-  int navigate = 1;
+  String typeSelected = 'chien'; // choix par défaut
+  int petTouched = -1; // pet sélectionné
+  int navigate = 1; // naviguer entre les formulaires
 
-  bool isValidName(String val) {
+  bool isValidName(String val) { // si une chaine n'est pas vide
     if (val == null || val.isEmpty) {
       return false;
     }
     return true;
   }
 
-  void selectPet(int ind) {
+  void selectPet(int ind) { // selectionner un pet dans la liste
     setState(() {
       if (petTouched == ind) {
         petTouched = -1;
@@ -65,45 +73,38 @@ class _SignUpState extends State<SignUpPage> {
     });
   }
 
-  void deletePetInList(int ind) {
+  void deletePetInList(int ind) { // Supprimer un pet dans une liste
     setState(() {
       petsList.removeAt(ind);
       petTouched = -1;
     });
   }
 
-  Future<void> placeAutocomplete(String query) async {
-    Uri uri = Uri.https("maps.googleapis.com",
-        "maps/api/place/autocomplete/json", {"input": query, "key": apiKey});
-    String? response = await NetworkUtils.fetchUrl(uri);
-    if (response != null) {}
-  }
-
-  void valueChange(String value) {
+  void valueChange(String value) { // Autocompletion de l'adresse
     setState(() {
-      placeAutocomplete(value);
+      RidesRepository().placeAutocomplete(value);
     });
   }
 
-  void changeValue(int value) {
+  void changeValue(int value) { // Changement du genre
     setState(() {
       selectedValue = value;
     });
   }
 
-  void navigationSign(int value) {
+  void navigationSign(int value) { // navigation entre les formulaires
     setState(() {
       navigate = value;
     });
   }
 
-  void isAddSection(bool value){
+  void isAddSection(bool value){ // Afficher uniquement le formulaire d'ajout d'un animal de compagnie
     setState(() {
       addPet = value;
     });
   }
 
-  void addPetToList(Pet pet){
+  void addPetToList(Pet pet){ // ajouter un animal de compagnie à la liste d'un utilisateur
     setState(() {
       petsList.add(pet);
     });
@@ -118,7 +119,7 @@ class _SignUpState extends State<SignUpPage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 30),
-            child: Row(
+            child: Row( // Navigation vers la page d'accueil
               children: [
                 IconButton(
                   onPressed: () {
@@ -137,19 +138,22 @@ class _SignUpState extends State<SignUpPage> {
               padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
               children: [
                 (navigate == 1)
-                    ? PersonnalInformation(
+                    ? PersonnalInformation( // formulaire sur les informations personnelles
                   selectedValue: selectedValue,
                   changeValue: changeValue,
                   valueChange: valueChange,
-                  controllerAddress: _controllerAddress,
+                  controllerPostal: _controllerPostal,
                   navigationSign: navigationSign,
                   controllerFirstname: _controllerFirstname,
                   controllerLastname: _controllerLastname,
                   controllerNumber: _controllerNumber,
+                  controllerCity: _controllerCity,
+                  controllerStreet: _controllerStreet,
+                  addressChanged: addressChanged,
                 )
                     : const SizedBox.shrink(),
                 (navigate == 2)
-                    ? SignAuth(
+                    ? SignAuth( // Information  sur la connexion
                   navigationSign: navigationSign,
                   controllerEmail: _controllerEmail,
                   controllerPassword: _controllerPassword,
@@ -159,7 +163,7 @@ class _SignUpState extends State<SignUpPage> {
                 (navigate == 3)
                     ? Column(
                   children: [
-                    SignPets(
+                    SignPets( // Ajout des animaux de compagnie qui est optionnel
                         isValidName: isValidName,
                         petAge: _petAge,
                         petBreed: _petBreed,
@@ -226,6 +230,7 @@ class _SignUpState extends State<SignUpPage> {
                                       lastname: _controllerLastname.value.text,
                                       gender: selectedValue == 1 ? 'F' : 'M',
                                       password: _controllerPassword.value.text,
+                                      number: _controllerNumber.value.text,
                                       address:  Address(
                                           city: 'Brive',
                                           country: 'France',

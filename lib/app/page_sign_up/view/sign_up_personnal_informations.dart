@@ -6,21 +6,27 @@ class PersonnalInformation extends StatelessWidget {
     Key? key,
     required this.selectedValue,
     required this.changeValue,
-    required this.controllerAddress,
+    required this.controllerPostal,
     required this.valueChange,
     required this.controllerFirstname,
     required this.navigationSign,
     required this.controllerLastname,
     required this.controllerNumber,
+    required this.controllerStreet,
+    required this.controllerCity,
+    required this.addressChanged,
   }) : super(key: key);
   int selectedValue;
   Function changeValue;
   Function valueChange;
   Function navigationSign;
-  TextEditingController controllerAddress;
+  TextEditingController controllerPostal;
   TextEditingController controllerFirstname;
   TextEditingController controllerLastname;
   TextEditingController controllerNumber;
+  TextEditingController controllerCity;
+  TextEditingController controllerStreet;
+  Function addressChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +165,12 @@ class PersonnalInformation extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           AutoAddress(
-            controllerAddress: controllerAddress,
+            controllerNumber: controllerNumber,
+            controllerPostal: controllerPostal,
             valueChange: valueChange,
+            controllerCity: controllerCity,
+            controllerStreet: controllerStreet,
+            addressChanged: addressChanged,
           ),
           const SizedBox(height: 10),
           Row(
