@@ -96,4 +96,32 @@ class UsersRepository {
     }
     return null;
   }
+
+  Future<Map<String, dynamic>?> findDocUserById(String userId) async {
+    // Recuperation du document par son ID
+    DocumentSnapshot documentSnapshot = await collection.doc(userId).get();
+
+    // Vérification si le document existe
+    if (documentSnapshot.exists) {
+      // Utilisez les données du document ici
+      Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+      return data;
+    }
+    return null;
+
+  }
+
+  void updateUser(userdb.User user) async {
+    // Obtenez une référence au document que vous souhaitez mettre à jour
+    DocumentReference documentRef =
+    collection.doc(Globals().idUser);
+
+    try {
+      // Effectuez la mise à jour du document
+      await documentRef.update(user.toJson());
+      print('Document mis à jour avec succès');
+    } catch (error) {
+      print('Erreur lors de la mise à jour du document : $error');
+    }
+  }
 }

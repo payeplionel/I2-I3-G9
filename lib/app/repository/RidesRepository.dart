@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:i2_i3_g9/app/models/pet.dart';
 import 'package:i2_i3_g9/app/models/rides.dart';
+
+import '../utils/constants.dart';
+import '../utils/network_util.dart';
 
 class RidesRepository {
   final CollectionReference collection =
@@ -70,4 +75,49 @@ class RidesRepository {
       print("Failed to update document: $error");
     });
   }
+
+  // Future<void> placeAutocomplete(String query) async {
+  //   Uri uri = Uri.https("maps.googleapis.com",
+  //       "maps/api/place/autocomplete/json", {"input": query, "key": apiKey});
+  //   String? response = await NetworkUtils.fetchUrl(uri);
+  //   print(response);
+  //   if (response != null) {}
+  // }
+
+  Future<List> placeAutocomplete(String query) async {
+    Uri uri = Uri.https("maps.googleapis.com",
+        "maps/api/place/autocomplete/json", {"input": query, "key": apiKey});
+    String? response = await NetworkUtils.fetchUrl(uri);
+
+    if (response != null) {
+      // Analysez la réponse JSON et extrayez les données d'autocomplétion
+      // Supposons que les résultats d'autocomplétion soient stockés dans une liste appelée 'results'
+      List results = parseAutocompleteResponse(response);
+      return results;
+    } else {
+      return [];
+    }
+  }
+
+  List parseAutocompleteResponse(String response) {
+    // Convertir la chaîne de réponse en un objet JSON
+    Map<String, dynamic> jsonResponse = json.decode(response);
+
+    // Vérifier si la réponse contient la clé "predictions" (prédictions)
+    if (jsonResponse.containsKey("predictions")) {
+      // Extraire la liste des prédictions
+      List<dynamic> predictions = jsonResponse["predictions"];
+
+      // Parcourir les prédictions et extraire les descriptions
+      List results = predictions.map((prediction) {
+        return prediction["description"];
+      }).toList();
+
+      return results;
+    } else {
+      return [];
+    }
+  }
+
+
 }

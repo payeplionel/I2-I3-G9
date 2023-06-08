@@ -33,4 +33,9 @@ class Pet{
       referenceId: json['referenceId'] as String,
     );
   }
+
+  @override
+  String toString() {
+    return 'Pet{referenceId: $referenceId, type: $type, age: $age, breed: $breed, description: $description, name: $name}';
+  }
 }
