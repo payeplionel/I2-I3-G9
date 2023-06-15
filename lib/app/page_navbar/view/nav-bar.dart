@@ -43,6 +43,9 @@ class NavBar extends StatelessWidget {
           case 1:
             Navigator.pushNamed(context, '/create');
             break;
+          case 2:
+            Navigator.pushNamed(context, '/history');
+            break;
           case 3:
             Navigator.pushNamed(context, '/setting');
             break;

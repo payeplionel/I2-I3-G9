@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../widgets/autocomplete_address.dart';
 
 class PersonnalInformation extends StatelessWidget {
@@ -11,10 +14,15 @@ class PersonnalInformation extends StatelessWidget {
     required this.controllerFirstname,
     required this.navigationSign,
     required this.controllerLastname,
-    required this.controllerNumber,
+    required this.controllerPhone,
     required this.controllerStreet,
     required this.controllerCity,
     required this.addressChanged,
+    required this.controllerNumber,
+    required this.pickImageFromCamera,
+    required this.pickImageFromGallery,
+    required this.imageFile,
+    required this.showImage,
   }) : super(key: key);
   int selectedValue;
   Function changeValue;
@@ -23,14 +31,57 @@ class PersonnalInformation extends StatelessWidget {
   TextEditingController controllerPostal;
   TextEditingController controllerFirstname;
   TextEditingController controllerLastname;
-  TextEditingController controllerNumber;
+  TextEditingController controllerPhone;
   TextEditingController controllerCity;
   TextEditingController controllerStreet;
+  TextEditingController controllerNumber;
+  XFile? imageFile;
   Function addressChanged;
+  Function pickImageFromCamera;
+  Function pickImageFromGallery;
+  Function showImage;
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
+
+    void personnalValidation() {
+      String message = '';
+      if (controllerFirstname.value.text.isEmpty) {
+        message += 'prénom';
+      }
+      if (controllerLastname.value.text.isEmpty) {
+        message += ' nom';
+      }
+      if (controllerPhone.value.text.isEmpty) {
+        message += ' téléphone';
+      }
+      if (controllerCity.value.text.isEmpty) {
+        message += ' Ville';
+      }
+      if (controllerPostal.value.text.isEmpty) {
+        message += ' code postal';
+      }
+      if (controllerNumber.value.text.isEmpty) {
+        message += ' numéro de rue';
+      }
+      if (controllerStreet.value.text.isEmpty) {
+        message += ' adresse';
+      }
+      if (message.isNotEmpty) {
+        final snackBar = SnackBar(
+          content: Text('$message invalide(s)'),
+          backgroundColor: Theme.of(context).primaryColor,
+          action: SnackBarAction(
+            label: 'Fermer',
+            onPressed: () {},
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else {
+        navigationSign(2);
+      }
+    }
 
     return Form(
       child: Column(
@@ -50,7 +101,7 @@ class PersonnalInformation extends StatelessWidget {
                 value: 1,
                 groupValue: selectedValue,
                 fillColor: MaterialStateColor.resolveWith(
-                      (states) => Theme.of(context).primaryColor,
+                  (states) => Theme.of(context).primaryColor,
                 ),
                 onChanged: (value) {
                   changeValue(1);
@@ -68,7 +119,7 @@ class PersonnalInformation extends StatelessWidget {
                 value: 2,
                 groupValue: selectedValue,
                 fillColor: MaterialStateColor.resolveWith(
-                      (states) => Theme.of(context).primaryColor,
+                  (states) => Theme.of(context).primaryColor,
                 ),
                 onChanged: (value) {
                   changeValue(2);
@@ -140,7 +191,7 @@ class PersonnalInformation extends StatelessWidget {
             height: 10,
           ),
           TextFormField(
-            controller: controllerNumber,
+            controller: controllerPhone,
             validator: (value) {
               if (value!.isEmpty) {
                 return 'Veuillez entrer votre numéro';
@@ -172,16 +223,93 @@ class PersonnalInformation extends StatelessWidget {
             controllerStreet: controllerStreet,
             addressChanged: addressChanged,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    imageFile = await pickImageFromCamera();
+                    showImage(imageFile);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).primaryColor), // Couleur du bouton
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/images/camera.png', // Chemin vers votre image locale
+                        width: 24, // Largeur de l'image
+                        height: 24, // Hauteur de l'image
+                      ),
+                      SizedBox(width: 8.0),
+                      const Expanded(child: Text('Prendre une photo')),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    imageFile = await pickImageFromGallery();
+                    showImage(imageFile);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).primaryColor), // Couleur du bouton
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/images/picture.png', // Chemin vers votre image locale
+                        width: 24, // Largeur de l'image
+                        height: 24, // Hauteur de l'image
+                      ),
+                      const SizedBox(width: 8.0),
+                      const Expanded(child: Text('Choisir une photo')),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          // Affichage de l'image dans un Container
+
+          // Affiche l'image
+          Container(
+            height: 150,
+            width: 150,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle, // Forme du conteneur (cercle dans ce cas)
+            ),
+            child: ClipOval(
+              child: imageFile != null
+                  ? Image.file(
+                      File(imageFile!.path),
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      'assets/images/picture.png', // Chemin vers votre image statique
+                      fit: BoxFit.cover,
+                    ),
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               OutlinedButton(
                 onPressed: () {
-                  // if (Form.of(context).validate()) {
-                  //   navigationSign(2);
-                  // }
-                  navigationSign(2);
+                  personnalValidation();
                 },
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,

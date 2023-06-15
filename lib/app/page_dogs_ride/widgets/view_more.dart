@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
@@ -31,6 +33,29 @@ class _ViewMore extends State<ViewMore> {
   void closeBottomSheet() {
     Navigator.pop(context);
   }
+
+  Future<int> generateCode() async {
+    bool isCorrect = true;
+    int randomCode = 0;
+    while (true) {
+      // Obtenir un timestamp unique pour utiliser comme graine (seed)
+      var timestamp = DateTime.now().millisecondsSinceEpoch;
+
+      // Créer un objet Random avec la graine
+      var random = Random(timestamp);
+
+      // Générer un nombre entier aléatoire de 4 chiffres
+      randomCode = random.nextInt(9000) + 1000;
+
+      isCorrect =
+          await RidesRepository().checkRideCode(Globals().idUser, randomCode);
+      if (!isCorrect) {
+        break;
+      }
+    }
+    return randomCode;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -52,13 +77,13 @@ class _ViewMore extends State<ViewMore> {
                         child: Container(
                           width: 50.0,
                           height: 10.0,
-                          color: Colors.grey, // Set a background color for the skeleton
+                          color: Colors
+                              .grey, // Set a background color for the skeleton
                         ),
                       );
                     } else {
                       if (snapshot.hasError) {
-                        return Text(
-                            'Une erreur s\'est produite : ${snapshot.error}');
+                        return Text('🤐 error');
                       } else {
                         final User? user = snapshot.data;
                         return Row(
@@ -148,7 +173,8 @@ class _ViewMore extends State<ViewMore> {
                           child: Container(
                             width: 100.0,
                             height: 10.0,
-                            color: Colors.grey, // Set a background color for the skeleton
+                            color: Colors
+                                .grey, // Set a background color for the skeleton
                           ),
                         );
                       } else if (snapshot.hasError) {
@@ -297,11 +323,12 @@ class _ViewMore extends State<ViewMore> {
                   const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
               child: OutlinedButton(
                 onPressed: () {
-                  setState(() {
-                    widget.ride['parter']=Globals().idUser;
+                  setState(() async {
+                    int randomCode = await generateCode();
+                    widget.ride['parter'] = Globals().idUser;
                     Map<String, dynamic> newRide = {
                       'address': widget.ride['address'],
-                      'code': widget.ride['code'],
+                      'code': randomCode,
                       'partner': Globals().idUser,
                       'pets': widget.ride['pets'],
                       'status': 'in progress',

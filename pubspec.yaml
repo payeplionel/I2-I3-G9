@@ -49,6 +49,9 @@ dependencies:
   geocoding: ^2.1.0
   shimmer_animation: ^2.1.0+1
   http: 0.13.6
+  gradient_borders: ^1.0.0
+  image_picker: ^0.8.8
+  firebase_storage: ^11.2.3
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +94,8 @@ flutter:
     - assets/images/trash.png
     - assets/images/pencil.png
     - assets/images/pets.gif
+    - assets/images/picture.png
+    - assets/images/camera.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

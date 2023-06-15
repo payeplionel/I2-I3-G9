@@ -5,6 +5,7 @@ import 'package:i2_i3_g9/app/page_dogs_ride/view/dogs_ride.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:i2_i3_g9/app/page_setting/view/setting_page.dart';
 
+import 'app/page_history/view/History.dart';
 import 'app/page_login/view/login.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/create': (context) =>  CreateTrip(),
         '/login': (context) => LoginPage(),
         '/setting': (context) => settingPage(),
+        '/history': (context) => HistoryPage(),
       },
     );
   }
