@@ -74,16 +74,65 @@ class ListRide extends StatelessWidget {
               height: 100,
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 80,
-                    child: Container(
-                      margin: const EdgeInsets.all(4.0),
-                      height: 70,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
+                  FutureBuilder<User?>(
+                    future: userNames(rides),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<User?> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                          width: 80,
+                          child: Container(
+                            margin: const EdgeInsets.all(4.0),
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            child: const Center(child: Text('🔶'),),
+                          ),
+                        );
+                      } else {
+                        if (snapshot.hasError) {
+                          return SizedBox(
+                            width: 80,
+                            child: Container(
+                              margin: const EdgeInsets.all(4.0),
+                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              child: const Center(child: Text('🟪'),),
+                            ),
+                          );
+                        } else {
+                          final User? user = snapshot.data;
+                          return SizedBox(
+                            width: 70,
+                            child: user!.image.isEmpty ?
+                            Container(
+                              margin: const EdgeInsets.all(4.0),
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              child: Center(child: Text(user.gender == 'M' ? '🧔‍♂️' : '👱‍♀️'),),
+                            ):
+                            Container(
+                              margin: const EdgeInsets.all(4.0),
+                              height: 60,
+                              child: ClipOval(
+                                child: Image.network(
+                                  user.image,
+                                  fit: BoxFit.cover, // Ajuste l'image pour remplir le conteneur
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                    },
                   ),
                   Expanded(
                     child: GestureDetector(

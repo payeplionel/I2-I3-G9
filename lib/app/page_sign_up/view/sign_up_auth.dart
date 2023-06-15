@@ -19,6 +19,43 @@ class SignAuth extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     final _formKey = GlobalKey<FormState>();
 
+    void personnalAuthentification(){
+      String message = '';
+      if(controllerEmail.value.text.isEmpty){
+        message += 'email';
+      }
+      if(controllerPassword.value.text.isEmpty){
+        message += ' mot de passe';
+      }
+      if(controllerPasswordVerif.value.text.isEmpty){
+        message += ' vérification de mot de passe';
+      }
+      if(message.isNotEmpty){
+        final snackBar = SnackBar(
+          content: Text('$message vide(s)'),
+          backgroundColor: Theme.of(context).primaryColor,
+          action: SnackBarAction(
+            label: 'Fermer',
+            onPressed: () {},
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }else{
+        if(controllerPassword.value.text!= controllerPasswordVerif.value.text){
+          final snackBar = SnackBar(
+            content: const Text('Assurez vous de mettre le même mot de passe dans la vérification'),
+            backgroundColor: Theme.of(context).primaryColor,
+            action: SnackBarAction(
+              label: 'Fermer',
+              onPressed: () {},
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }else{
+          navigationSign(3);
+        }
+      }
+    }
 
     return  Column(
       children: [
@@ -97,10 +134,7 @@ class SignAuth extends StatelessWidget {
             ),
             OutlinedButton(
               onPressed: () {
-                // if (Form.of(context)!.validate()) {
-                //   // navigationSign(3);
-                // }
-                navigationSign(3);
+                personnalAuthentification();
               },
               style: OutlinedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,

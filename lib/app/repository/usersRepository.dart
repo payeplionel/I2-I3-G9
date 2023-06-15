@@ -1,10 +1,17 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:i2_i3_g9/app/models/address.dart';
 import 'package:i2_i3_g9/app/models/user.dart' as userdb;
 import 'package:i2_i3_g9/app/utils/globals.dart';
 import '../models/pet.dart';
 import '../models/rides.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+
+
 
 class UsersRepository {
   final CollectionReference collection =
@@ -85,6 +92,17 @@ class UsersRepository {
     return null;
   }
 
+  Future<String?>? getUrlImageById(String userId) async {
+    DocumentSnapshot documentSnapshot = await collection.doc(userId).get();
+
+    if (documentSnapshot.exists) {
+      final Map<String, dynamic> data =
+      documentSnapshot.data() as Map<String, dynamic>;
+      return data['image'];
+    }
+    return null;
+  }
+
   Future<userdb.User?> getUserById(String userId) async {
     DocumentSnapshot documentSnapshot = await collection.doc(userId).get();
 
@@ -123,5 +141,69 @@ class UsersRepository {
     } catch (error) {
       print('Erreur lors de la mise à jour du document : $error');
     }
+  }
+
+  Future<Address> getAutoAddress(String potentialAddress) async {
+    String firstPotentialAddress = potentialAddress;
+
+    List<String> adresseDivisee =
+    firstPotentialAddress.split(', ');
+
+    String rue = adresseDivisee[0];
+    String codePostalVille = adresseDivisee[1];
+    String pays = adresseDivisee[2];
+    String numeroRue = '';
+
+    // Trouver le premier espace dans la rue pour séparer le numéro de rue
+    int indexPremierEspace = rue.indexOf(' ');
+    if (indexPremierEspace != -1) {
+      // Extraire le numéro de rue en utilisant la sous-chaîne jusqu'à l'index du premier espace
+      numeroRue = rue.substring(0, indexPremierEspace);
+      rue = rue.substring(indexPremierEspace);
+    } else {
+      // Si aucun espace n'est trouvé, le numéro de rue est la rue complète
+      numeroRue = rue;
+    }
+
+    List<String> codePostalVilleDivise =
+    codePostalVille.split(' ');
+    String codePostal = codePostalVilleDivise[0];
+    String ville = codePostalVilleDivise[1];
+
+    List<Location> locations = await locationFromAddress("$numeroRue $rue, $ville, $codePostal, $pays");
+
+    Address address;
+
+    // Sélectionnez la première location si des résultats sont trouvés
+    if (locations.isNotEmpty) {
+      Location firstLocation = locations.first;
+      double latitude = firstLocation.latitude;
+      double longitude = firstLocation.longitude;
+      // Utilisez les coordonnées (latitude, longitude) comme point de localisation
+      address = Address(
+        city: ville,
+        country: pays,
+        number: numeroRue,
+        postal: codePostal,
+        street: rue,
+        long: longitude,
+        lat: latitude
+      );
+    } else {
+      // Aucun résultat trouvé pour l'adresse donnée
+      address = Address(
+          city: ville,
+          country: pays,
+          number: numeroRue,
+          postal: codePostal,
+          street: rue,
+          long: 0.0,
+          lat: 0.0
+      );
+    }
+
+    print(address.toString());
+
+    return address;
   }
 }

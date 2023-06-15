@@ -11,6 +11,7 @@ class User {
   bool verification = false;
   Address address;
   String number;
+  String image;
   // Map<String,Pets> pets;
   // List<Rides> rides;
 
@@ -22,6 +23,7 @@ class User {
     required this.password,
     required this.address,
     required this.number,
+    required this.image
   });
 
   Map<String, dynamic> toJson() => {
@@ -33,6 +35,7 @@ class User {
     'verification': verification,
     'address': address.toJson(),
     'number': number,
+    'image': image,
     // 'pets': _petsList(pets),
     // 'rides': _ridesList(rides),
   };
@@ -46,6 +49,7 @@ class User {
       password: json['password'] as String,
       address: Address.fromJson(json['address'] as Map<String, dynamic>),
       number: json['number'] as String,
+      image: json['image'] as String
       // pets: _convertPets(json['pets'] as Map<String, dynamic>),
       // rides: _convertRides(json['rides'] as Map<String, dynamic>),
     );
