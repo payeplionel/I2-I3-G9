@@ -18,6 +18,42 @@ class RidesRepository {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getRidesCreateByUser(String userId) {
+    return collection
+        .where('creator', isEqualTo: userId)
+        .where('status', isEqualTo: 'available')
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getRidesDidByUser(String userId) {
+    return collection
+        .where('partner', isEqualTo: userId)
+        .where('status', isEqualTo: 'in progress')
+        .snapshots();
+  }
+
+  Future<bool> checkRideCode(String userId, int code) async {
+    QuerySnapshot querySnapshot = await collection
+        .where('creator', isEqualTo: userId)
+        .where('code', isEqualTo: code).get();
+
+    return querySnapshot.size > 0;
+  }
+
+  Stream<QuerySnapshot> getPastRidesForUser(String userId) {
+    return collection
+        .where('creator', isEqualTo: userId)
+        .snapshots();
+  }
+
+
+  Stream<QuerySnapshot> getProgressRidesForUser(String userId) {
+    return collection
+        .where('creator', isEqualTo: userId)
+        .where('status', isEqualTo: 'in progress')
+        .snapshots();
+  }
+
   Future<DocumentReference> addRide(Rides ride) {
     return collection.add(ride.toJson());
   }
@@ -84,22 +120,22 @@ class RidesRepository {
   //   if (response != null) {}
   // }
 
-  Future<List> placeAutocomplete(String query) async {
+  Future<List<String>> placeAutocomplete(String query) async {
+
     Uri uri = Uri.https("maps.googleapis.com",
         "maps/api/place/autocomplete/json", {"input": query, "key": apiKey});
     String? response = await NetworkUtils.fetchUrl(uri);
 
     if (response != null) {
-      // Analysez la réponse JSON et extrayez les données d'autocomplétion
-      // Supposons que les résultats d'autocomplétion soient stockés dans une liste appelée 'results'
-      List results = parseAutocompleteResponse(response);
+      List<String> results = parseAutocompleteResponse(response);
+
       return results;
     } else {
       return [];
     }
   }
 
-  List parseAutocompleteResponse(String response) {
+  List<String> parseAutocompleteResponse(String response) {
     // Convertir la chaîne de réponse en un objet JSON
     Map<String, dynamic> jsonResponse = json.decode(response);
 
@@ -109,11 +145,13 @@ class RidesRepository {
       List<dynamic> predictions = jsonResponse["predictions"];
 
       // Parcourir les prédictions et extraire les descriptions
+      List<String> address = [];
       List results = predictions.map((prediction) {
+        address.add(prediction["description"]);
         return prediction["description"];
       }).toList();
 
-      return results;
+      return address;
     } else {
       return [];
     }

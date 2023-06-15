@@ -141,7 +141,6 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
         .then((Position position) {
       setState(() {
         _currentPosition = position;
-        print("oui");
         debugPrint('${_currentPosition!.longitude} ${_currentPosition!.latitude}');
       });
     }).catchError((e) {
@@ -158,7 +157,6 @@ class _DogsRideState extends State<DogsRide> with TickerProviderStateMixin {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Expanded(child: MapOverview()),
           Expanded(
               child: GestureDetector(
             onVerticalDragUpdate: isMap

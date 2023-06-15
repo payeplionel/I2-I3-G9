@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:i2_i3_g9/app/models/address.dart';
 import 'package:i2_i3_g9/app/models/rides.dart';
+import 'package:i2_i3_g9/app/page_history/view/History.dart';
 import 'package:i2_i3_g9/app/repository/RidesRepository.dart';
 import 'package:i2_i3_g9/app/repository/usersRepository.dart';
 import 'package:i2_i3_g9/app/utils/globals.dart';
@@ -118,18 +119,31 @@ class _CreateTrip extends State<CreateTrip> {
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       } else {
-        if(dropdownValue == 'Ma position actuelle'){
-          Rides ride = Rides(
-            // Ajout d'un nouveau trajet
-              address: _currentAddress.toString(),
-              code: '',
-              partner: '',
-              pets: petsSelected,
-              creator: Globals().idUser,
-              date: Timestamp.fromDate(date),
-              time: Timestamp.fromDate(time),
-              status: 'available');
-          RidesRepository().addRide(ride);
+        if(dropdownValue == 'Position actuelle introuvable'){
+          if(_currentAddress == null){
+            final snackBar = SnackBar(
+              content: Text(warningText),
+              backgroundColor: Theme.of(context).primaryColor,
+              action: SnackBarAction(
+                label: 'Voir',
+                onPressed: () {},
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }else{
+            Rides ride = Rides(
+              // Ajout d'un nouveau trajet
+                address: _currentAddress.toString(),
+                code: '',
+                partner: '',
+                pets: petsSelected,
+                creator: Globals().idUser,
+                date: Timestamp.fromDate(date),
+                time: Timestamp.fromDate(time),
+                status: 'available');
+            RidesRepository().addRide(ride);
+          }
+
         }else {
           Rides ride = Rides(
             // Ajout d'un nouveau trajet
@@ -142,6 +156,10 @@ class _CreateTrip extends State<CreateTrip> {
               time: Timestamp.fromDate(time),
               status: 'available');
           RidesRepository().addRide(ride);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HistoryPage()),
+          );
         }
       }
     } else {

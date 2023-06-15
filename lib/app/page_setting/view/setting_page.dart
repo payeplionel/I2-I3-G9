@@ -8,6 +8,7 @@ import 'package:i2_i3_g9/app/utils/globals.dart';
 import '../../models/pet.dart';
 import '../../page_login/view/login.dart';
 import '../../page_navbar/view/nav-bar.dart';
+import '../../page_sign_up/widgets/PotentialAddresses.dart';
 import '../../page_sign_up/widgets/autocomplete_address.dart';
 import '../../repository/usersRepository.dart';
 
@@ -43,6 +44,10 @@ class _settingPageState extends State<settingPage> {
   final TextEditingController _controllerStreet = TextEditingController();
   final TextEditingController _controllerPhone = TextEditingController();
   bool isAddressChanged = false;
+  String image = '';
+  List<String> potentialAddress = [];
+  int actualAddress = -1;
+
 
   void addressChanged() { // lorsqu'on a changé d'adresse
     setState(() {
@@ -112,7 +117,7 @@ class _settingPageState extends State<settingPage> {
   }
 
   Address address =
-      Address(city: '', country: '', number: '', postal: '', street: '');
+      Address(city: '', country: '', number: '', postal: '', street: '', long: 0.0, lat: 0.0);
 
   // void deletePetInList(int ind) { //Supprimer un animal
   //   setState(() {
@@ -142,6 +147,7 @@ class _settingPageState extends State<settingPage> {
         _controllerStreet.text = address.street;
         _controllerPostal.text = address.postal;
         _controllerCity.text = address.city;
+        image = data['image'];
 
         if (data['gender'] == 'M') {
           selectedValue = 2;
@@ -155,6 +161,67 @@ class _settingPageState extends State<settingPage> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
+    void updateSettings(userdb.User user){
+      String message = '';
+      if(_controllerFirstname.value.text.isEmpty){
+        message += 'prénom';
+      }
+      if(_controllerLastname.value.text.isEmpty){
+        message += ' nom';
+      }
+      if(_controllerPhone.value.text.isEmpty){
+        message += ' téléphone';
+      }
+      if(_controllerCity.value.text.isEmpty){
+        message += ' Ville';
+      }
+      if(_controllerPostal.value.text.isEmpty){
+        message += ' code postal';
+      }
+      if(_controllerNumber.value.text.isEmpty){
+        message += ' numéro de rue';
+      }
+      if(_controllerStreet.value.text.isEmpty){
+        message += ' adresse';
+      }
+      if(message.isNotEmpty){
+        final snackBar = SnackBar(
+          content: Text('$message invalide(s)'),
+          backgroundColor: Theme.of(context).primaryColor,
+          action: SnackBarAction(
+            label: 'Fermer',
+            onPressed: () {},
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }else{
+        final snackBar = SnackBar(
+          content: const Text('Mise à jour effectuée'),
+          backgroundColor: Theme.of(context).primaryColor,
+          action: SnackBarAction(
+            label: 'Fermer',
+            onPressed: () {},
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        UsersRepository().updateUser(user);
+      }
+    }
+
+    Future<void> updateUser(String addressUpdate) async {
+      Address addressTemp = await UsersRepository().getAutoAddress(addressUpdate);
+      userdb.User user = userdb.User(
+          email: _controllerEmail.value.text,
+          firstname: _controllerFirstname.value.text,
+          lastname: _controllerLastname.value.text,
+          gender: selectedValue == 2 ? 'M' : 'F',
+          address: addressTemp,
+          number: _controllerPhone.value.text,
+          image: image,
+          password: '');
+      updateSettings(user);
+
+    }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -651,51 +718,50 @@ class _settingPageState extends State<settingPage> {
                   child: OutlinedButton(
                     onPressed: () async {
                       if (isAddressChanged) {
-                        List potentialAddress = await RidesRepository()
+                        potentialAddress = await RidesRepository()
                             .placeAutocomplete(
                                 '${_controllerNumber.value.text} ${_controllerStreet.value.text} ${_controllerCity.value.text} ${_controllerPostal.value.text}');
+                        if(potentialAddress.length == 0){
+                          final snackBar = SnackBar(
+                            content: const Text(
+                                "Vérifier votre adresse"),
+                            backgroundColor:
+                            Theme.of(context)
+                                .primaryColor,
+                            action: SnackBarAction(
+                              label: 'Fermer',
+                              onPressed: () {},
+                            ),
+                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(snackBar);
+                        }
                         if (potentialAddress.length == 1) {
-                          String firstPotentialAddress = potentialAddress.first;
-
-                          List<String> adresseDivisee =
-                              firstPotentialAddress.split(', ');
-
-                          String rue = adresseDivisee[0];
-                          String codePostalVille = adresseDivisee[1];
-                          String pays = adresseDivisee[2];
-                          String numeroRue = '';
-
-                          // Trouver le premier espace dans la rue pour séparer le numéro de rue
-                          int indexPremierEspace = rue.indexOf(' ');
-                          if (indexPremierEspace != -1) {
-                            // Extraire le numéro de rue en utilisant la sous-chaîne jusqu'à l'index du premier espace
-                            numeroRue = rue.substring(0, indexPremierEspace);
-                            rue = rue.substring(indexPremierEspace);
-                          } else {
-                            // Si aucun espace n'est trouvé, le numéro de rue est la rue complète
-                            numeroRue = rue;
-                          }
-
-                          List<String> codePostalVilleDivise =
-                              codePostalVille.split(' ');
-                          String codePostal = codePostalVilleDivise[0];
-                          String ville = codePostalVilleDivise[1];
-
-                          Address addressTemp = Address(
-                              city: ville,
-                              country: pays,
-                              number: numeroRue,
-                              postal: codePostal,
-                              street: rue);
-                          userdb.User user = userdb.User(
-                              email: _controllerEmail.value.text,
-                              firstname: _controllerFirstname.value.text,
-                              lastname: _controllerLastname.value.text,
-                              gender: selectedValue == 2 ? 'M' : 'F',
-                              address: addressTemp,
-                              number: _controllerPhone.value.text,
-                              password: '');
-                          UsersRepository().updateUser(user);
+                          updateUser(potentialAddress.first);
+                        }
+                        if(potentialAddress.length > 1){
+                          showModalBottomSheet<void>(
+                            context: context,
+                            shape:
+                            const RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.vertical(
+                                  top:
+                                  Radius.circular(
+                                      20.0)),
+                            ),
+                            builder:
+                                (BuildContext context) {
+                              return PotentialsAddresses(
+                                potentialAddress:
+                                potentialAddress,
+                                actualAddress:
+                                actualAddress,
+                                createAccount:
+                                updateUser,
+                              );
+                            },
+                          );
                         }
                       } else {
                         userdb.User user = userdb.User(
@@ -705,8 +771,9 @@ class _settingPageState extends State<settingPage> {
                             gender: selectedValue == 2 ? 'M' : 'F',
                             address: address,
                             number: _controllerPhone.value.text,
+                            image: image,
                             password: '');
-                        UsersRepository().updateUser(user);
+                        updateSettings(user);
                       }
                     },
                     style: OutlinedButton.styleFrom(
